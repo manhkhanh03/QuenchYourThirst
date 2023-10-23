@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using QuenchYourThirst.Models;
+using System.Text.Json.Serialization;
 
 namespace QuenchYourThirst
 {
@@ -15,6 +16,11 @@ namespace QuenchYourThirst
             var connection = builder.Configuration.GetConnectionString("DefaultConnection");
 
             builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(connection));
+
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+            });
 
             var app = builder.Build();
 

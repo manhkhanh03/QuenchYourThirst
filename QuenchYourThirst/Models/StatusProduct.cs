@@ -10,5 +10,6 @@ namespace QuenchYourThirst.Models
         [Key]
         public long id { get; set; }
         public string name { get; set; }
+        public ICollection<Product> Product { get; set; }
     }
 }

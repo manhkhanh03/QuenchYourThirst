@@ -1,6 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using QuenchYourThirst.Models;
 using System.Diagnostics;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System;
+using Microsoft.AspNetCore.WebUtilities;
+
 
 namespace QuenchYourThirst.Controllers
 {
@@ -25,42 +31,76 @@ namespace QuenchYourThirst.Controllers
             return View();
         }
 
-        private int totalProduct()
+        private int totalProduct(long category)
         {
-            var total = _context.Products.Count();
+            var total = _context.Products.Where(p => p.product_category_id == category).Count();
             return total;
+        }
+
+        private async Task<List<ProductCategory>> ProductCategoriesAsync()
+        {
+            var categories = await _context.ProductCategorys
+                .ToListAsync();
+            var allCategory = new ProductCategory
+            {
+                id = 0,
+                name = "All"
+            };
+
+            categories.Insert(0, allCategory);
+            return categories;
         }
 
         [HttpGet]
         [Route("/{test}/{shop}")]
-        public IActionResult Test([FromQuery] Dictionary<string, string> request)
+        public async Task<IActionResult> Test([FromQuery] Dictionary<string, string> request)
         {
             int per_page = 0;
             int currentPage = 0;
-            if (request.ContainsKey("pp") && int.TryParse(request["pp"], out per_page)){}
+            if (request.ContainsKey("pp") && int.TryParse(request["pp"], out per_page)) { }
             if (request.ContainsKey("p") && int.TryParse(request["p"], out currentPage)) { }
+            per_page = per_page == 0 ? 24 : per_page;
+            currentPage = currentPage == 0 ? 1 : currentPage;
 
             int offset = (currentPage - 1) * per_page;
             int limit = per_page;
+            int category = request.ContainsKey("c") ? int.Parse(request["c"]) : 0;
+            var products = _context.ProductSizeFlavors
+                .Include(psf => psf.Product)
+                    .ThenInclude(pc => pc.ProductCategory)
+                .Where(psf => psf.Product.status_product_id == 1)
+                .Where(psf => psf.Product.product_category_id == category || category == 0)
+                .Select(psf => new
+                {
+                    psfs = psf,
+                    products = psf.Product,
+                    imgs = psf.Product.ProductImage.First(),
 
-            var products = (from psf in _context.ProductSizeFlavors
-                            join p in _context.Products on psf.product_id equals p.id
-                            join s in _context.Sizes on psf.size_id equals s.id
-                            join f in _context.Flavors on psf.flavor_id equals f.id
-                            join img in _context.ProductImages on p.id equals img.product_id
-                            where p.status_product_id == 1 select new
-                            {
-                                psfs = psf,
-                                products = p,
-                                sizes = s,
-                                flavors = f,
-                                imgs = img,
-                            }).Skip(offset).Take(limit).ToList();
+                })
+                .Skip(offset)
+                .Take(limit)
+                .ToList();
 
-            ViewData["totalPage"] = (int)(totalProduct() / limit);
+
+
+            ViewData["totalPage"] = (int)Math.Ceiling((double)totalProduct(category) / limit);
             ViewData["currentPage"] = currentPage;
+            ViewBag.categories = await ProductCategoriesAsync();
+            ViewData["category"] = category;
+
+            var fullUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.Path}{this.Request.QueryString}";
+            // Parse the query string
+            var queryDictionary = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(this.Request.QueryString.ToString());
+            // Remove all 'c' parameters
+            queryDictionary = queryDictionary.Where(p => p.Key != "c").ToDictionary(p => p.Key, p => p.Value);
+            // Construct new URL without 'c' parameters
+            var newUrl = Microsoft.AspNetCore.WebUtilities.QueryHelpers.AddQueryString($"{this.Request.Scheme}://{this.Request.Host}{this.Request.Path}", queryDictionary);
+
+            ViewData["url"] = newUrl;
+
             return View(products);
         }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
