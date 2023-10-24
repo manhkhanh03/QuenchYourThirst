@@ -1,19 +1,19 @@
 ﻿ @* @model IList<QuenchYourThirst.Models.ProductSizeFlavor> *@
 @* @model IList<object> *@
 @{
-    var urlWeb = ViewData["url"];
-    // var products = ViewBag.products;
+    var countQueryString = ViewData["countQueryString"];
+    var queryStringP_PP = ViewData["p_pp"];
+    var queryStringC = ViewData["c"];
 }
 @using Newtonsoft.Json.Linq;
 @using Newtonsoft.Json;
 <script>
     
-    const values = @Html.Raw(Json.Serialize(Model));
+    const values = @Html.Raw(Json.Serialize(queryStringP_PP));
     console.log(values)
-
-
+    console.log("2: ", @Html.Raw(Json.Serialize(queryStringC)))
 </script>
-<div class="hero-wrap hero-bread" style="background-image: url('/images/bg_1.jpg');">
+<div class="hero-wrap hero-bread" style="background-image: url('/~/images/bg_1.jpg');">
     <div class="container">
         <div class="row no-gutters slider-text align-items-center justify-content-center">
             <div class="col-md-9 ftco-animate text-center">
@@ -40,7 +40,8 @@
                             <li><span class="active">@item.name</span></li>
                             continue;
                         }
-                        <li><a href="@(urlWeb + "&c=" + item.id)">@item.name</a></li>
+                        @* <li><a href="@(urlWeb + ((int)countQueryString == 0 ? "?c=" : "&c=") + item.id )">@item.name</a></li> *@
+                        <li><a href="@((int)countQueryString == 0 ? "?c=" : $"{queryStringC}&c=")@item.id">@item.name</a></li>
                      }
                 </ul>
             </div>
@@ -55,13 +56,13 @@
             {
                 <div class="col-md-6 col-lg-3 ftco-animate">
                     <div class="product">
-                        <a href="#" class="img-prod">
+                        <a href="/@product.products.name/@product.products.id" class="img-prod">
                             <img class="img-fluid" src="@product.imgs.url" alt="">
                             <span class="status">30%</span>
                             <div class="overlay"></div>
                         </a>
                         <div class="text py-3 pb-4 px-3 text-center">
-                            <h3><a href="#">@product.products.name</a></h3>
+                            <h3><a href="/@product.products.name/@product.products.id">@product.products.name</a></h3>
                             <div class="d-flex">
                                 <div class="pricing">
                                     <p class="price"><span class="mr-2 price-dc">$120.00 @totalPage</span><span class="price-sale">@product.psfs.price đ</span></p>
@@ -90,11 +91,19 @@
             <div class="col text-center">
                 <div class="block-27">
                     <ul>
+                        @{
+                            int countQueryStringInt = (int)countQueryString;
+                            string ppQueryString = (string)queryStringP_PP != "" ? queryStringP_PP + "&pp=24" : "?pp=24";
+                            string href = countQueryStringInt == 0 ? "?pp=24" : $"{ppQueryString}";
+                        }
                         @for (int i = 1; i < totalPage + 1; i++) 
                         {
+                            string next = $"&p={currentPage + 1}";
+                            string prev = $"&p={currentPage - 1}";
+                            string isPage = $"&p={i}";
                             @if (currentPage != 1 && i == 1)
                             {
-                                <li><a href="?pp=24&p=@(currentPage - 1)">&lt;</a></li>
+                                <li><a href="@(href + prev)">&lt;</a></li>
                             }
                             @if (currentPage == i)
                             {
@@ -104,23 +113,21 @@
                             }
                             else if (currentPage <= 5)
                             {
-                                <li data-active-page="@i" class="">
-                                    <a href="?pp=24&p=@i">@i</a></li>
+                                <li><a href="@(href + isPage)">@i</a></li>
+
                                 @if (i >= 5)
                                 {
                                     <li data-active-page="" class="__other">
                                         <span>...</span>
                                     </li>
-                                    <li data-active-page="@(currentPage + 1)" class="__other">
-                                        <a href="?pp=24&p=@(currentPage + 1)">&gt;</a>
-                                    </li>
+                                    <li><a href="@(href + next)">&gt;</a></li>
+
                                     break;
                                 }
                                 @if (totalPage <= 5 && i == totalPage)
                                 {
-                                    <li data-active-page="@(currentPage + 1)" class="__other">
-                                        <a href="?pp=24&p=@(currentPage + 1)">&gt;</a>
-                                    </li>
+                                    <li><a href="@(href + next)">&gt;</a></li>
+
                                 }
                             }
                             else if (currentPage > 5)
@@ -137,15 +144,14 @@
                                 }
                                 else if (i <= totalPage && (i < (currentPage + 3)))
                                 {
-                                    <li data-active-page="@i" class=""><a href="?pp=24&p=@i">@i</a></li>
+                                    <li><a href="@(href + isPage)">@i</a></li>
+
                                 }
                                 else
                                 {
                                     if (currentPage != totalPage)
                                     {
-                                        <li data-active-page="" class="__other">
-                                            <a href="?pp=24&p=@(currentPage + 1)">&gt;</a>
-                                        </li>
+                                        <li><a href="@(href + next)">&gt;</a></li>
                                     }
                                     break;
                                 }

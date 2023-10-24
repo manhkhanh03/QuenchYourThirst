@@ -33,7 +33,7 @@ namespace QuenchYourThirst.Controllers
 
         private int totalProduct(long category)
         {
-            var total = _context.Products.Where(p => p.product_category_id == category).Count();
+            var total = _context.Products.Where(p => p.product_category_id == category || category == 0).Count();
             return total;
         }
 
@@ -52,7 +52,7 @@ namespace QuenchYourThirst.Controllers
         }
 
         [HttpGet]
-        [Route("/{test}/{shop}")]
+        [Route("/shop")]
         public async Task<IActionResult> Test([FromQuery] Dictionary<string, string> request)
         {
             int per_page = 0;
@@ -88,17 +88,45 @@ namespace QuenchYourThirst.Controllers
             ViewBag.categories = await ProductCategoriesAsync();
             ViewData["category"] = category;
 
-            var fullUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.Path}{this.Request.QueryString}";
-            // Parse the query string
-            var queryDictionary = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(this.Request.QueryString.ToString());
-            // Remove all 'c' parameters
-            queryDictionary = queryDictionary.Where(p => p.Key != "c").ToDictionary(p => p.Key, p => p.Value);
-            // Construct new URL without 'c' parameters
-            var newUrl = Microsoft.AspNetCore.WebUtilities.QueryHelpers.AddQueryString($"{this.Request.Scheme}://{this.Request.Host}{this.Request.Path}", queryDictionary);
+            var queryDictionary = QueryHelpers.ParseQuery(this.Request.QueryString.ToString());
+            var queryStringC = queryDictionary;
+            var queryStringP_PP = queryDictionary;
+            if (request.ContainsKey("c"))
+                queryStringC = queryDictionary.Where(p => p.Key != "c").ToDictionary(p => p.Key, p => p.Value);
+            if (request.ContainsKey("p") && request.ContainsKey("pp")) {
+                queryDictionary = queryDictionary.Where(p => p.Key != "p").ToDictionary(p => p.Key, p => p.Value);
+                queryStringP_PP = queryDictionary.Where(p => p.Key != "pp").ToDictionary(p => p.Key, p => p.Value);
+            }
 
-            ViewData["url"] = newUrl;
-
+            ViewData["countQueryString"] = queryDictionary.Count;
+            ViewData["c"] = new Uri(QueryHelpers.AddQueryString($"{this.Request.Host}{this.Request.Path}", queryStringC)).Query;
+            ViewData["p_pp"] = new Uri(QueryHelpers.AddQueryString($"{this.Request.Host}{this.Request.Path}", queryStringP_PP)).Query;
             return View(products);
+        }
+
+        [HttpGet]
+        [Route("/{product_name}/{id}")]
+        public IActionResult Product([FromQuery] Dictionary<string, string> request, long id)
+        {
+            if (id == 0 || id == null)
+                return Redirect("/not-found");
+            var product = _context.ProductSizeFlavors
+                .Include(psf => psf.Product)
+                    .ThenInclude(p => p.ProductImage)
+                .Include(psf => psf.Size)
+                .Include(psf => psf.Flavor)
+                .Where(psf => psf.Product.id == id)
+                .Where(psf => psf.Product.status_product_id == 1).FirstOrDefault();
+                // sửa lại đoạn ni lấy sản phẩm đầu tiên và nhiều bản ghi khác các bảng khác ví dụ: product  là 1 object và các bảng khác là 1 mảng
+            if (product == null) return Redirect("/not-found");
+            return View(product);
+        }
+
+        [HttpGet]
+        [Route("/not-found")]
+        public IActionResult NotFound404()
+        {
+            return View();
         }
 
 
