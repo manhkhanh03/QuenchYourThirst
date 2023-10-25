@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using QuenchYourThirst.Models;
 using System.Diagnostics;
 
@@ -59,7 +60,7 @@ namespace QuenchYourThirst.Controllers
 
             ViewData["totalPage"] = (int)(totalProduct() / limit);
             ViewData["currentPage"] = currentPage;
-            return View(products);
+            return Ok(products);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

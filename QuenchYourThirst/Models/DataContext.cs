@@ -11,5 +11,6 @@ namespace QuenchYourThirst.Models
         public DbSet<Size> Sizes { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
         public DbSet<StatusProduct> StatusProducts { get; set; }
+         public DbSet<Menu> Menus { get; set; } 
     }
 }
