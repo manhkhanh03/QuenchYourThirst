@@ -1,8 +1,19 @@
 ﻿ @* @model IList<QuenchYourThirst.Models.ProductSizeFlavor> *@
 @* @model IList<object> *@
-
-<script> console.log(@Html.Raw(Json.Serialize(Model)))</script>
-<div class="hero-wrap hero-bread" style="background-image: url('/images/bg_1.jpg');">
+@{
+    var countQueryString = ViewData["countQueryString"];
+    var queryStringP_PP = ViewData["p_pp"];
+    var queryStringC = ViewData["c"];
+}
+@using Newtonsoft.Json.Linq;
+@using Newtonsoft.Json;
+<script>
+    
+    const values = @Html.Raw(Json.Serialize(queryStringP_PP));
+    console.log(values)
+    console.log("2: ", @Html.Raw(Json.Serialize(queryStringC)))
+</script>
+<div class="hero-wrap hero-bread" style="background-image: url('/~/images/bg_1.jpg');">
     <div class="container">
         <div class="row no-gutters slider-text align-items-center justify-content-center">
             <div class="col-md-9 ftco-animate text-center">
@@ -18,33 +29,43 @@
         <div class="row justify-content-center">
             <div class="col-md-10 mb-5 text-center">
                 <ul class="product-category">
-                    <li><a href="#" class="active">All</a></li>
-                    <li><a href="#">Vegetables</a></li>
-                    <li><a href="#">Fruits</a></li>
-                    <li><a href="#">Juice</a></li>
-                    <li><a href="#">Dried</a></li>
+                    @{
+                        var category = ViewData["category"];
+                        var categories = ViewBag.categories;
+                    }
+                     @foreach(var item in categories)
+                     { 
+                        @if (item.id == int.Parse(Convert.ToString(category)))
+                        {
+                            <li><span class="active">@item.name</span></li>
+                            continue;
+                        }
+                        @* <li><a href="@(urlWeb + ((int)countQueryString == 0 ? "?c=" : "&c=") + item.id )">@item.name</a></li> *@
+                        <li><a href="@((int)countQueryString == 0 ? "?c=" : $"{queryStringC}&c=")@item.id">@item.name</a></li>
+                     }
                 </ul>
             </div>
         </div>
         <div class="row">
             @{
-                var currentPage = ViewData["currentPage"];
-
+                var currentPage = (int)ViewData["currentPage"];
+                var totalPage = (int)ViewData["totalPage"];
+                totalPage = totalPage == 0 ? 1 : totalPage;
             }
-            @foreach(var product in Model)
+            @foreach (var product in Model)
             {
                 <div class="col-md-6 col-lg-3 ftco-animate">
                     <div class="product">
-                        <a href="#" class="img-prod">
+                        <a href="/@product.products.name/@product.products.id" class="img-prod">
                             <img class="img-fluid" src="@product.imgs.url" alt="">
                             <span class="status">30%</span>
                             <div class="overlay"></div>
                         </a>
                         <div class="text py-3 pb-4 px-3 text-center">
-                            <h3><a href="#">@product.products.name</a></h3>
+                            <h3><a href="/@product.products.name/@product.products.id">@product.products.name</a></h3>
                             <div class="d-flex">
                                 <div class="pricing">
-                                    <p class="price"><span class="mr-2 price-dc">$120.00 @currentPage</span><span class="price-sale">@product.psfs.price đ</span></p>
+                                    <p class="price"><span class="mr-2 price-dc">$120.00 @totalPage</span><span class="price-sale">@product.psfs.price đ</span></p>
                                 </div>
                             </div>
                             <div class="bottom-area d-flex px-3">
@@ -63,7 +84,6 @@
                         </div>
                     </div>
                 </div>
-                
             }
             
         </div>
@@ -71,13 +91,73 @@
             <div class="col text-center">
                 <div class="block-27">
                     <ul>
-                        <li><a href="#">&lt;</a></li>
-                        <li class="active"><span>1</span></li>
-                        <li class="@( (int)currentPage == 2 ? "active" : "")"><a href="?pp=24&p=2">2</a></li>
-                        <li><a href="?pp=24&p=3">3</a></li>
-                        <li><a href="#">4</a></li>
-                        <li><a href="#">5</a></li>
-                        <li><a href="#">&gt;</a></li>
+                        @{
+                            int countQueryStringInt = (int)countQueryString;
+                            string ppQueryString = (string)queryStringP_PP != "" ? queryStringP_PP + "&pp=24" : "?pp=24";
+                            string href = countQueryStringInt == 0 ? "?pp=24" : $"{ppQueryString}";
+                        }
+                        @for (int i = 1; i < totalPage + 1; i++) 
+                        {
+                            string next = $"&p={currentPage + 1}";
+                            string prev = $"&p={currentPage - 1}";
+                            string isPage = $"&p={i}";
+                            @if (currentPage != 1 && i == 1)
+                            {
+                                <li><a href="@(href + prev)">&lt;</a></li>
+                            }
+                            @if (currentPage == i)
+                            {
+                                <li data-active-page="@i" class="active">
+                                    <span>@i</span>
+                                </li>
+                            }
+                            else if (currentPage <= 5)
+                            {
+                                <li><a href="@(href + isPage)">@i</a></li>
+
+                                @if (i >= 5)
+                                {
+                                    <li data-active-page="" class="__other">
+                                        <span>...</span>
+                                    </li>
+                                    <li><a href="@(href + next)">&gt;</a></li>
+
+                                    break;
+                                }
+                                @if (totalPage <= 5 && i == totalPage)
+                                {
+                                    <li><a href="@(href + next)">&gt;</a></li>
+
+                                }
+                            }
+                            else if (currentPage > 5)
+                            {
+                                if (i >= 4 && i < currentPage)
+                                {
+                                    if (i == 4)
+                                    {
+                                        <li data-active-page="" class="__other">
+                                            <span>...</span>
+                                        </li>
+                                    }
+                                    continue;
+                                }
+                                else if (i <= totalPage && (i < (currentPage + 3)))
+                                {
+                                    <li><a href="@(href + isPage)">@i</a></li>
+
+                                }
+                                else
+                                {
+                                    if (currentPage != totalPage)
+                                    {
+                                        <li><a href="@(href + next)">&gt;</a></li>
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+
                     </ul>
                 </div>
             </div>

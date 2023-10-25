@@ -8636,16 +8636,20 @@ h1, h2, h3, h4, h5,
   display: inline-block;
   font-weight: 400;
   font-size: 16px; }
-  .product-category li a {
-    color: #82ae46;
-    padding: 5px 20px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    -ms-border-radius: 5px;
-    border-radius: 5px; }
-    .product-category li a.active {
-      background: #82ae46;
-      color: #fff; }
+    .product-category li a,
+    .product-category li span {
+        color: #82ae46;
+        padding: 5px 20px;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        -ms-border-radius: 5px;
+        border-radius: 5px;
+    }
+    .product-category li a.active,
+    .product-category li span.active {
+        background: #82ae46;
+        color: #fff;
+    }
 
 .ftco-product .owl-carousel .owl-stage-outer {
   padding-bottom: 2em;
@@ -8756,7 +8760,7 @@ h1, h2, h3, h4, h5,
     }
         .product .text h3 a {
             color: #000000;
-            font-family: "Roboto" !important;
+            font-family: "Helvetica" !important;
         }
     .product .text p.price {
       margin-bottom: 0;

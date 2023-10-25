@@ -4,14 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QuenchYourThirst.Models
 {
-    [Table("product_images")]
-    public class ProductImage
+    [Table("product_category")]
+    public class ProductCategory
     {
         [Key]
         public long id { get; set; }
-        [ForeignKey("Product")]
-        public long product_id { get; set; }
-        public string url { get; set; }
-        public Product Product { get; set; }
+        public string name { get; set; }
+        public ICollection<Product> Product { get; set; }
+
     }
 }

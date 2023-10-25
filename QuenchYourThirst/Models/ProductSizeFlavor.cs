@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using QuenchYourThirst.Models;
 
 namespace QuenchYourThirst.Models
 {
@@ -16,5 +17,9 @@ namespace QuenchYourThirst.Models
         [ForeignKey("Flavor")]
         public long flavor_id { get; set; }
         public decimal price { get; set; }
+
+        public Product Product { get; set; }
+        public Size Size { get; set; }
+        public Flavor Flavor { get; set; }
     }
 }
