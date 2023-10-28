@@ -1,0 +1,55 @@
+﻿@using QuenchYourThirst.Models;
+@model IList<Menu> 
+
+
+
+<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+		<div class="collapse navbar-collapse" id="ftco-nav">
+		@foreach (var item in Model.Where(m => m.MenuID == 7))
+		{
+
+			<div class="col-lg-4 text-center text-lg-start">
+				<a class="navbar-brand" href="">@item.MenuName</a>
+				</div>
+			
+		}
+		
+			<ul class="navbar-nav ml-auto ">
+
+				@foreach (var menu in Model.Where(m => m.Levels == 1).OrderBy(n => n.MenuOrder))
+				{
+					var Pid = menu.MenuID;
+					var Smenu = Model.Where(p => p.ParentID == Pid).OrderBy(p => p.MenuOrder).ToList();
+
+					@if (Smenu.Count == 0)
+					{			
+							<li class="nav-item active"><a href="" class="nav-link">@menu.MenuName</a></li>
+					}
+					else
+					{
+							<li class="nav-item dropdown">
+
+								<a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@menu.MenuName</a>
+								<div class="dropdown-menu" aria-labelledby="dropdown04">
+								@foreach (var smn in Smenu)
+								{
+											<a href="" class="dropdown-item">@smn.MenuName</a>
+								}
+							
+								</div>
+							</li>
+					}
+
+					
+				}
+				
+				
+				<li class="nav-item cta cta-colored"><a href="cart.html" class="nav-link"><span class="icon-shopping_cart"></span>[0]</a></li>
+				
+			</ul>
+			
+		</div>
+	
+</nav>
+
+

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 using QuenchYourThirst.Models;
 using System.Security.Cryptography;
@@ -35,5 +36,6 @@ namespace QuenchYourThirst.Controllers
 
             return Ok(products);
         }
+
     }
 }

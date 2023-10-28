@@ -58,7 +58,11 @@ namespace QuenchYourThirst.Controllers
                                 imgs = img,
                             }).Skip(offset).Take(limit).ToList();
 
+<<<<<<< Updated upstream
             ViewData["totalPage"] = (int)(totalProduct() / limit);
+=======
+            ViewData["totalPage"] = (int)Math.Ceiling((double)totalProduct(category) / limit);
+>>>>>>> Stashed changes
             ViewData["currentPage"] = currentPage;
             return Ok(products);
         }

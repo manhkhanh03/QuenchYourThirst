@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
+
 namespace QuenchYourThirst.Models
 {
     public class ErrorViewModel
@@ -6,4 +9,5 @@ namespace QuenchYourThirst.Models
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
     }
+     
 }
