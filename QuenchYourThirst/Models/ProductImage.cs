@@ -12,6 +12,6 @@ namespace QuenchYourThirst.Models
         [ForeignKey("Product")]
         public long product_id { get; set; }
         public string url { get; set; }
-        public Product Product { get; set; }
+        //public Product Product { get; set; }
     }
 }

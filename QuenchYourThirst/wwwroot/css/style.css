@@ -2558,6 +2558,15 @@ input[type="button"].btn-block {
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 0.25rem; }
 
+.dropdown-menu::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -4px;
+    right: 0;
+    height: 4px;
+}
+
 .dropdown-menu-right {
   right: 0;
   left: auto; }
@@ -8886,7 +8895,7 @@ h1, h2, h3, h4, h5,
       -moz-appearance: none;
       appearance: none;
       text-transform: uppercase;
-      letter-spacing: 2px; }
+      letter-spacing: 1px; }
 
 .ftco-cart button i {
   color: #82ae46; }

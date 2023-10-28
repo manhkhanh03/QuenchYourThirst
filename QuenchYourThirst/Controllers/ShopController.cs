@@ -17,16 +17,19 @@ namespace QuenchYourThirst.Controllers
         [Route("/data/test")]
         public IActionResult DataTest()
         {
-            var products = _context.Products.ToList();
+            var products = new ProductSizeFlavor();
             Random rand = new Random();
 
-            foreach (var product in products)
+            for(int i = 1; i <= 50; i++)
             {
-                product.product_category_id = rand.Next(1, 4);
-                _context.Products.Update(product);
-            }
+                products.id = i + 67;
+                products.product_id = rand.Next(1, 50);
+                products.size_id = rand.Next(1,4);
+                products.flavor_id = rand.Next(1, 16);
+                products.price = rand.Next(10, 101);
+                _context.ProductSizeFlavors.Add(products);
             _context.SaveChanges();
-            var productss = _context.Products.ToList();
+            }
 
             return Ok(products);
         }
