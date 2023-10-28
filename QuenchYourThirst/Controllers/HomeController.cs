@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using QuenchYourThirst.Models;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
@@ -93,28 +92,8 @@ namespace QuenchYourThirst.Controllers
                                 imgs = img,
                             }).Skip(offset).Take(limit).ToList();
 
-            ViewData["totalPage"] = (int)Math.Ceiling((double)totalProduct(category) / limit);
+            ViewData["totalPage"] = (int)(totalProduct() / limit);
             ViewData["currentPage"] = currentPage;
-            ViewBag.categories = await ProductCategoriesAsync();
-            ViewData["category"] = category;
-
-            var queryDictionary = QueryHelpers.ParseQuery(this.Request.QueryString.ToString());
-            var countQueryString = queryDictionary;
-            var queryStringC = queryDictionary;
-            var queryStringP_PP = queryDictionary;
-            if (request.ContainsKey("c"))
-                queryStringC = queryDictionary.Where(p => p.Key != "c").ToDictionary(p => p.Key, p => p.Value);
-            countQueryString = queryStringC;
-
-            if (request.ContainsKey("p") && request.ContainsKey("pp")) {
-                queryDictionary = queryDictionary.Where(p => p.Key != "p").ToDictionary(p => p.Key, p => p.Value);
-                queryStringP_PP = queryDictionary.Where(p => p.Key != "pp").ToDictionary(p => p.Key, p => p.Value);
-            }
-
-            //ViewData["countQueryString"] = queryDictionary.Count;
-            ViewData["countQueryString"] = countQueryString.Count;
-            ViewData["c"] = new Uri(QueryHelpers.AddQueryString($"{this.Request.Host}{this.Request.Path}", queryStringC)).Query;
-            ViewData["p_pp"] = new Uri(QueryHelpers.AddQueryString($"{this.Request.Host}{this.Request.Path}", queryStringP_PP)).Query;
             return View(products);
         }
 

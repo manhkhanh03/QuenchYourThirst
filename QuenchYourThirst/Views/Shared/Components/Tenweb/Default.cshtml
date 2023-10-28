@@ -1,0 +1,25 @@
+﻿@using QuenchYourThirst.Utilities;
+@using QuenchYourThirst.Models;
+@model IList<Bangtenweb>
+
+<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+    <div class="container">
+        @foreach (var Bangtenwebs in Model)
+        {
+            
+            <a class="navbar-brand" href="">@Bangtenwebs.Name</a>
+
+        }
+       
+        
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+           
+            <span class="oi oi-menu"></span> Menu
+        </button>
+        <div class="collaspe navbar-collapse" id="ftco-nav">
+        <ul class="navbar-nav ml-auto">
+            
+            </ul>
+        </div>
+      </div>
+ </nav>

@@ -1,5 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using QuenchYourThirst.Models;
+﻿﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
+using QuenchYourThirst.Models;
+using System;
 
 namespace QuenchYourThirst.Models
 {
@@ -51,5 +56,15 @@ namespace QuenchYourThirst.Models
             //    .WithMany(p => p.Product)
             //    .HasForeignKey(pci => pci.product_category_id);
         }
+
+         public DbSet<Menu> Menus { get; set; } 
+
+        public DbSet<ProductCategory> ProductCategorys { get; set; }
+
+        public DbSet<Bangtenweb> Bangtenwebs { get; set; }
+        //Đổi lại ten ni cho t cấy này, không có tiếng việt trong code bangtenweb ????
+        public DbSet<Menu> Menus { get; set; }
+        public DbSet<Postss> Postss { get; set; }
+      
     }
 }
