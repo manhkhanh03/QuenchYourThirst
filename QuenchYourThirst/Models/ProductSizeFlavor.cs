@@ -18,8 +18,8 @@ namespace QuenchYourThirst.Models
         public long flavor_id { get; set; }
         public decimal price { get; set; }
 
-        public Product Product { get; set; }
-        public Size Size { get; set; }
-        public Flavor Flavor { get; set; }
+        //public Product Product { get; set; }
+        //public Size Size { get; set; }
+        //public Flavor Flavor { get; set; }
     }
 }

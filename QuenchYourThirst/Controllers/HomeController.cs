@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System;
 using Microsoft.AspNetCore.WebUtilities;
+using System.Collections.Generic;
 
 
 namespace QuenchYourThirst.Controllers
@@ -65,23 +66,32 @@ namespace QuenchYourThirst.Controllers
             int offset = (currentPage - 1) * per_page;
             int limit = per_page;
             int category = request.ContainsKey("c") ? int.Parse(request["c"]) : 0;
-            var products = _context.ProductSizeFlavors
-                .Include(psf => psf.Product)
-                    .ThenInclude(pc => pc.ProductCategory)
-                .Where(psf => psf.Product.status_product_id == 1)
-                .Where(psf => psf.Product.product_category_id == category || category == 0)
-                .Select(psf => new
-                {
-                    psfs = psf,
-                    products = psf.Product,
-                    imgs = psf.Product.ProductImage.First(),
+            //var products = _context.ProductSizeFlavors
+            //    .Include(psf => psf.Product)
+            //        .ThenInclude(pc => pc.ProductCategory)
+            //    .Where(psf => psf.Product.status_product_id == 1)
+            //    .Where(psf => psf.Product.product_category_id == category || category == 0)
+            //    .Select(psf => new
+            //    {
+            //        psfs = psf,
+            //        products = psf.Product,
+            //        imgs = psf.Product.ProductImage.First(),
 
-                })
-                .Skip(offset)
-                .Take(limit)
-                .ToList();
-
-
+            //    })
+            //    .Skip(offset)
+            //    .Take(limit)
+            //    .ToList();
+            var products = (from p in _context.Products
+                            join psf in _context.ProductSizeFlavors on p.id equals psf.product_id into psfGroup
+                            join img in _context.ProductImages on p.id equals img.product_id
+                            where p.status_product_id == 1
+                            where p.product_category_id == category || category == 0
+                            select new
+                            {
+                                prices = psfGroup.Select(psf => psf.price).OrderBy(psf => psf).ToList(),
+                                products = p,
+                                imgs = img,
+                            }).Skip(offset).Take(limit).ToList();
 
             ViewData["totalPage"] = (int)Math.Ceiling((double)totalProduct(category) / limit);
             ViewData["currentPage"] = currentPage;
@@ -89,16 +99,20 @@ namespace QuenchYourThirst.Controllers
             ViewData["category"] = category;
 
             var queryDictionary = QueryHelpers.ParseQuery(this.Request.QueryString.ToString());
+            var countQueryString = queryDictionary;
             var queryStringC = queryDictionary;
             var queryStringP_PP = queryDictionary;
             if (request.ContainsKey("c"))
                 queryStringC = queryDictionary.Where(p => p.Key != "c").ToDictionary(p => p.Key, p => p.Value);
+            countQueryString = queryStringC;
+
             if (request.ContainsKey("p") && request.ContainsKey("pp")) {
                 queryDictionary = queryDictionary.Where(p => p.Key != "p").ToDictionary(p => p.Key, p => p.Value);
                 queryStringP_PP = queryDictionary.Where(p => p.Key != "pp").ToDictionary(p => p.Key, p => p.Value);
             }
 
-            ViewData["countQueryString"] = queryDictionary.Count;
+            //ViewData["countQueryString"] = queryDictionary.Count;
+            ViewData["countQueryString"] = countQueryString.Count;
             ViewData["c"] = new Uri(QueryHelpers.AddQueryString($"{this.Request.Host}{this.Request.Path}", queryStringC)).Query;
             ViewData["p_pp"] = new Uri(QueryHelpers.AddQueryString($"{this.Request.Host}{this.Request.Path}", queryStringP_PP)).Query;
             return View(products);
@@ -110,15 +124,33 @@ namespace QuenchYourThirst.Controllers
         {
             if (id == 0 || id == null)
                 return Redirect("/not-found");
-            var product = _context.ProductSizeFlavors
-                .Include(psf => psf.Product)
-                    .ThenInclude(p => p.ProductImage)
-                .Include(psf => psf.Size)
-                .Include(psf => psf.Flavor)
-                .Where(psf => psf.Product.id == id)
-                .Where(psf => psf.Product.status_product_id == 1).FirstOrDefault();
-                // sửa lại đoạn ni lấy sản phẩm đầu tiên và nhiều bản ghi khác các bảng khác ví dụ: product  là 1 object và các bảng khác là 1 mảng
+            var product = (from p in _context.Products
+                           where p.id == id
+                           select new
+                           {
+                               product = p,
+                               psfs = _context.ProductSizeFlavors.Where(psf => psf.product_id == p.id).OrderBy(psf => psf.price).ToList(),
+                               imgs = _context.ProductImages.Where(img => img.product_id == p.id).ToList(),
+                               sizes = _context.ProductSizeFlavors.Where(psf => psf.product_id == p.id)
+                                        .Select(psf => _context.Sizes.FirstOrDefault(s => s.id == psf.size_id)).ToList(),
+                               flavors = _context.ProductSizeFlavors.Where(psf => psf.product_id == p.id)
+                                        .Select(psf => _context.Flavors.FirstOrDefault(f => f.id == psf.flavor_id)).ToList(),
+                           }).First();
+
             if (product == null) return Redirect("/not-found");
+            var selectSize = new Size
+            {
+                id = 0,
+                name = "Chọn size:"
+            };
+			var selectFlavor = new Flavor
+			{
+				id = 0,
+				name = "Chọn hương vị:"
+			};
+			product.sizes.Insert(0, selectSize);
+			product.flavors.Insert(0, selectFlavor);
+                
             return View(product);
         }
 

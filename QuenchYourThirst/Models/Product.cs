@@ -20,10 +20,10 @@ namespace QuenchYourThirst.Models
         public DateTime created_at { get; set; }
 
         //[JsonIgnore]
-        public ICollection<ProductSizeFlavor> ProductSizeFlavor { get; set; }
-        public ICollection<ProductImage> ProductImage { get; set; }
-        public StatusProduct StatusProduct { get; set; }
-        public ProductCategory ProductCategory { get; set; }
+        //public ICollection<ProductSizeFlavor> ProductSizeFlavor { get; set; }
+        //public ICollection<ProductImage> ProductImage { get; set; }
+        //public StatusProduct StatusProduct { get; set; }
+        //public ProductCategory ProductCategory { get; set; }
 
     }
 }
