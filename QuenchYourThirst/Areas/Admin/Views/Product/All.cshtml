@@ -1,0 +1,58 @@
+﻿<!-- Responsive Table -->
+
+<style>
+    tbody td img {
+        width: 74px;
+        height: 68px;
+        border-radius: 6px;
+    }
+</style>
+<div class="card">
+    <h5 class="card-header">Sản phẩm của cửa hàng</h5>
+    <div class="table-responsive text-nowrap">
+        <table class="table">
+            <thead>
+                <tr class="text-nowrap">
+                    <th>#</th>
+                    <th>Hình ảnh</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Trạng thái</th>
+                    <th>Loại sản phẩm</th>
+                    <th>Tồn kho</th>
+                    <th>Đã bán</th>
+                    <th>Giá</th>
+                    <th>Hương vị</th>
+                    <th>Kích thước</th>
+                    <th>Chức năng</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                int index = 1;
+                }
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <th scope="row">@(index++)</th>
+                        <td>
+                            <img src="@item.images.url" alt="@item.images.url">
+                        </td>
+                        <td>@item.products.name</td>
+                        <td>@item.products.status_product_id</td>
+                        <td>@item.products.product_category_id</td>
+                        <td>@item.products.quantity</td>
+                        <td>@item.products.quantity</td>
+                        <td>@item.products.quantity</td>
+                        <td>@item.products.quantity</td>
+                        <td>@item.products.quantity</td>
+                        <td>
+                            <a asp—area="admin" asp—action="edit" asp-route-id="@item.products.id" class="btn btn-primary" title="Sửa sản phẩm"><i class='bx bxs-edit-alt'></i></a>
+                            <a asp—area="admin" asp—action="delete" asp-route-id="@item.products.id" class="btn btn-danger" title="Xoá sản phẩm"><i class="fa-solid fa-trash-can"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<!--/ Responsive Table -->

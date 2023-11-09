@@ -1,0 +1,9 @@
+﻿:root {
+    --color-warning: #ff0000;
+}
+
+.form-message {
+    color: var(--color-warning);
+    position: absolute;
+    font-size: 12px;
+}

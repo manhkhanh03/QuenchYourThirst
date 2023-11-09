@@ -4,20 +4,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace QuenchYourThirst.Models
 {
 
-    [Table("Menu")]
+    [Table("menu")]
     public class Menu
     {
         [Key]
-        public int MenuID { get; set; }
-        public string? MenuName { get; set; }
-        public bool? IsActive { get; set; }
-        public string? ControllerName { get; set; }
-        public string? ActionName { get; set; }
-        public int Levels { get; set; }
-        public int ParentID { get; set; }
-        public string? Link { get; set; }
-        public int MenuOrder { get; set; }
-        public int Position { get; set; }
+        public int id { get; set; }
+        public string? menuName { get; set; }
+        public bool? isActive { get; set; }
+        public string? controllerName { get; set; }
+        public string? actionName { get; set; }
+        public int levels { get; set; }
+        public int parentID { get; set; }
+        public string? link { get; set; }
+        public int menuOrder { get; set; }
+        public int position { get; set; }
     }
 
 }

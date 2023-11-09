@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace QuenchYourThirst.Models
 {
@@ -17,7 +18,8 @@ namespace QuenchYourThirst.Models
         public string name { get; set; }
         public string? description {  get; set; }
         public long quantity { get; set; }
-        public DateTime created_at { get; set; }
+        public DateTime? created_at { get; set; }
+
 
         //[JsonIgnore]
         //public ICollection<ProductSizeFlavor> ProductSizeFlavor { get; set; }
