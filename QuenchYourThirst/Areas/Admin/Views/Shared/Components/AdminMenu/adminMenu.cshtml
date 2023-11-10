@@ -74,13 +74,13 @@
             var subMenu = Model.Where(m => m.parentLevel == item.id).OrderBy(menu => menu.order).ToList();
             <li class="menu-item @(controllerName == item.controllerName.Trim() ? "open active" : "")">
                 <a href="" class="menu-link @(subMenu.Any() ? "menu-toggle" : "")">
-                    <i class="menu-icon tf-icons bi bi-card-checklist"></i>
+                    <i class="menu-icon tf-icons @item.icon"></i>
                     <div data-i18n="Analytics">@item.name</div>
                 </a>
                 <ul class="menu-sub ssm">
                     @foreach (var sm in subMenu)
                     {
-                        <li class="menu-item @(actionName == sm.actionName.Trim() ? "active" : "")">
+                        <li class="menu-item @(actionName == sm.actionName.Trim() && controllerName == item.controllerName.Trim() ? "active" : "")">
                             <a href="/@item.areaName/@sm.controllerName/@sm.actionName" class="menu-link">
                                 <div data-i18n="Without menu">@sm.name</div>
                             </a>

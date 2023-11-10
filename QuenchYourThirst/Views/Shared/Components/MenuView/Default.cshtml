@@ -1,28 +1,36 @@
 ﻿@using QuenchYourThirst.Models;
-@model IList<Menu> 
+@using QuenchYourThirst.Utilities;
+@model IList<Menu>
 
 
 
 <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+	<div class="container">
+		<a class="navbar-brand" href="index.html">Vegefoods</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="oi oi-menu"></span> Menu
+		</button>
 		<div class="collapse navbar-collapse" id="ftco-nav">
-		@foreach (var item in Model.Where(m => m.id == 7))
-		{
+			@foreach (var item in Model.Where(m => m.id == 7))
+			{
 
-			<div class="col-lg-4 text-center text-lg-start">
-				<a class="navbar-brand" href="">@item.menuName</a>
+				<div class="col-lg-4 text-center text-lg-start">
+					<a class="navbar-brand" href="">@item.menuName</a>
 				</div>
-			
-		}
+
+			}
 			<ul class="navbar-nav ml-auto ">
 
 				@foreach (var menu in Model.Where(m => m.levels == 1).OrderBy(n => n.menuOrder))
 				{
 					var Pid = menu.id;
 					var Smenu = Model.Where(p => p.parentID == Pid).OrderBy(p => p.menuOrder).ToList();
+					var url = Functions.changeStringToString(menu.menuName);
 
 					@if (Smenu.Count == 0)
-					{			
-						<li class="nav-item active"><a href="" class="nav-link">@menu.menuName</a></li>
+					{
+						@if (!string.IsNullOrEmpty(menu.link)) url = menu.link;
+						<li class="nav-item active"><a href="/@url" class="nav-link">@menu.menuName</a></li>
 					}
 					else
 					{
@@ -30,21 +38,20 @@
 
 							<a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@menu.menuName</a>
 							<div class="dropdown-menu" aria-labelledby="dropdown04">
-							@foreach (var smn in Smenu)
-							{
-										<a href="" class="dropdown-item">@smn.menuName</a>
-							}
-							
+								@foreach (var smn in Smenu)
+								{
+									<a href="" class="dropdown-item">@smn.menuName</a>
+								}
+
 							</div>
 						</li>
 					}
-				}				
+				}
 				<li class="nav-item cta cta-colored"><a href="cart.html" class="nav-link"><span class="icon-shopping_cart"></span>[0]</a></li>
-				
-			</ul>
-			
-		</div>
-	
-</nav>
 
+			</ul>
+
+		</div>
+	</div>
+</nav>
 

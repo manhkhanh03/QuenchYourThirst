@@ -26,5 +26,20 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
             return BadRequest(psf);
 
         }
+
+        [HttpPut]
+        //[ValidateAntiForgeryToken]
+        public IActionResult Edit([FromBody] ProductSizeFlavor psf)
+        {
+
+            if (ModelState.IsValid)
+            {
+                _context.ProductSizeFlavors.Update(psf);
+                _context.SaveChanges();
+                return Ok(psf);
+            }
+            return BadRequest(psf);
+
+        }
     }
 }

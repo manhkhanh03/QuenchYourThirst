@@ -46,8 +46,8 @@
                         <td>@item.products.quantity</td>
                         <td>@item.products.quantity</td>
                         <td>
-                            <a asp—area="admin" asp—action="edit" asp-route-id="@item.products.id" class="btn btn-primary" title="Sửa sản phẩm"><i class='bx bxs-edit-alt'></i></a>
-                            <a asp—area="admin" asp—action="delete" asp-route-id="@item.products.id" class="btn btn-danger" title="Xoá sản phẩm"><i class="fa-solid fa-trash-can"></i></a>
+                            <a asp-area="admin" asp-controller="product" asp-action="edit" asp-route-id="@item.products.id" class="btn btn-primary" title="Sửa sản phẩm"><i class='bx bxs-edit-alt'></i></a>
+                            <a asp-area="admin" asp-controller="product" asp-action="delete" asp-route-id="@item.products.id" class="btn btn-danger" title="Xoá sản phẩm"><i class="fa-solid fa-trash-can"></i></a>
                         </td>
                     </tr>
                 }

@@ -1,14 +1,12 @@
 ﻿@model QuenchYourThirst.Models.Product;
 
 @{
-    Layout = "~/Areas/Admin/Views/Shared/_layout.cshtml";
-    var flavors = ViewBag.Flavors;
-    var sizes = ViewBag.Sizes;
-    // var abc = flavors.count;
+Layout = "~/Areas/Admin/Views/Shared/_layout.cshtml";
+var flavors = ViewBag.Flavors;
+var sizes = ViewBag.Sizes;
+var img = ViewBag.Image;
+var psf = ViewBag.PSF;
 }
-
-
-
 <!-- / Navbar -->
 <!-- Content wrapper -->
 <div class="content-wrapper">
@@ -23,7 +21,7 @@
                     <h3 class="card-header">Thêm mới sản phẩm</h3>
                     <div class="card-body">
                         <div class="d-flex align-items-start align-items-sm-center gap-4">
-                            <img src="~/admin/assets/img/avatars/add-image.png" alt="user-avatar" class="d-block rounded" height="100" width="100" id="uploadedAvatar" />
+                            <img src="@img.url" alt="user-avatar" class="d-block rounded" height="100" width="100" id="uploadedAvatar" />
                             <div class="button-wrapper">
                                 <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
                                     <span class="d-none d-sm-block">Upload new photo</span>
@@ -43,7 +41,8 @@
                     <div class="card-body">
                         <form id="formAccountSettings" method="POST">
                             <div class="row">
-                                <h5 >Thông tin cơ bản</h5>
+                                <h5>Thông tin cơ bản</h5>
+                                <input class="form-control" type="hidden" id="id" name="id" asp-for="id" />
                                 <div class="mb-3 col-md-6">
                                     <label for="name" class="form-label">Tên sản phẩm</label>
                                     <input class="form-control" type="text" id="name" name="name" asp-for="name" />
@@ -51,12 +50,12 @@
                                 </div>
                                 <div class="mb-3 col-md-6">
                                     <label class="form-label" for="product_category_id">Trạng thái sản phẩm</label>
-                                    <select id="status_product_id" name="status_product_id" class="select2 form-select" asp-for="status_product_id" asp-items="@(new SelectList(ViewBag.Status, "id", "name"))"></select>
+                                    <select id="status_product_id" name="status_product_id" class="select2 form-select" asp-for="status_product_id" asp-items="@(new SelectList(ViewBag.Status, "id", "name" ))"></select>
                                     <p class="form-message"></p>
                                 </div>
                                 <div class="mb-3 col-md-6">
                                     <label for="quantity" class="form-label">Số lượng</label>
-                                    <input class="form-control" type="text" id="quantity" name="quantity" placeholder="example: 1000" asp-for="quantity"/>
+                                    <input class="form-control" type="text" id="quantity" name="quantity" placeholder="example: 1000" asp-for="quantity" />
                                     <p class="form-message"></p>
                                 </div>
                                 <hr class="my-0" />
@@ -64,7 +63,7 @@
                                 <h5 style="margin-top:16px">Thông tin chi tiết</h5>
                                 <div class="mb-3 col-md-6">
                                     <label class="form-label" for="product_category_id">Loại đồ uống</label>
-                                    <select id="product_category_id" name="product_category_id" class="select2 form-select" asp-for="product_category_id" asp-items="@(new SelectList(flavors["typeFlavors"], "id", "name"))"></select>
+                                    <select id="product_category_id" name="product_category_id" class="select2 form-select" asp-for="product_category_id" asp-items="@(new SelectList(flavors["typeFlavors"], "id" , "name" ))"></select>
                                     <p class="form-message"></p>
                                 </div>
                                 <div class="mb-3 col-md-6">
@@ -72,38 +71,38 @@
                                     <select id="nameFlavor" class="select2 form-select" disabled>
                                         @foreach (var item in flavors["flavors"])
                                         {
-                                            if (item.isActive)
-                                            {
-                                                <option value="@item.id">@item.name</option>                                                
-                                            }
+                                        if (item.isActive)
+                                        {
+                                        <option value="@item.id">@item.name</option>
+                                        }
                                         }
                                     </select>
                                     <p class="form-message"></p>
                                 </div>
                                 <div class="mb-3 col-md-6">
                                     <label class="form-label" for="sizes">Kích cỡ</label>
-                                     @foreach (var item in sizes)
+                                    @foreach (var item in sizes)
                                     {
-                                        @if(item.isActive)
-                                        {
-                                            <div class="row item-size" style="position: relative; margin-left: 1.625rem;">
-                                                <select type="text" class="form-control width-auto size-id" readonly="" value="Nhỏ" style="margin: 10px 0px;">
-                                                    <option value="@item.id">@item.name</option>
-                                                </select>
-                                                <input type="text" class="form-control width-auto size-value" style="margin: 10px 0px;" value="@item.price" placeholder="Nhập giá...example: 10-100">
-                                                <p class="form-message" style="bottom: -23px;"></p>
-                                            </div>
-                                        }
-                                    } 
-                                    <select id="sizes" class="select2 form-select" style="margin-top: 10px;" >
+                                    @if(item.isActive)
+                                    {
+                                    <div class="row item-size" style="position: relative; margin-left: 1.625rem;">
+                                        <select type="text" class="form-control width-auto size-id" readonly="" data-psf="@item.psf" value="@item.name" style="margin: 10px 0px;">
+                                            <option value="@item.id">@item.name</option>
+                                        </select>
+                                        <input type="text" class="form-control width-auto size-value" style="margin: 10px 0px;" value="@item.price" placeholder="Nhập giá...example: 10-100">
+                                        <p class="form-message" style="bottom: -23px;"></p>
+                                    </div>
+                                    }
+                                    }
+                                    <select id="sizes" class="select2 form-select" style="margin-top: 10px;">
                                         @foreach (var item in sizes)
                                         {
-                                            @if(item.isActive)
-                                            {
-                                                <option value="@item.id" disabled>@item.name</option>
-                                                continue;
-                                            }
-                                            <option value="@item.id">@item.name</option>
+                                        @if(item.isActive)
+                                        {
+                                        <option value="@item.id" disabled>@item.name</option>
+                                        continue;
+                                        }
+                                        <option value="@item.id">@item.name</option>
                                         }
                                     </select>
                                     <p class="form-message"></p>
@@ -196,6 +195,7 @@
     function addDropbox(options) {
         const listImg = document.querySelectorAll(options.listImg)
         let file;
+        // console.log(listImg)
 
         var dbx = new Dropbox.Dropbox({
             accessToken: myAccessToken,
@@ -211,7 +211,7 @@
             }
             var imageUrl = listImg[key].src;
             var fileName = imageUrl.split('/').pop() + '.jpg';
-            console.log(imageUrl, fileName)
+            // if(options.currentUrl != imageUrl) {
             axios.get(imageUrl, { responseType: 'arraybuffer' })
                 .then(response => {
                     var fileContent = response.data;
@@ -236,17 +236,19 @@
                 .catch(error => {
                     console.error('Error fetching image:', error);
                 });
+            // }
         }
     }
 
     function handleUploadImgProduct(options) {
         return new Promise((resolve, reject) => {
             const data = {
+                id: @Html.Raw(Json.Serialize(img.id))
                 product_id: options.product_id,
                 url: options.url,
             }
 
-            axios.post(options.urlApi, data)
+            axios.put(options.urlApi, data)
                 .then(data => {
                     console.log("Success: ", data)
                     options.success()
@@ -257,6 +259,17 @@
                     reject()
                 })
         })
+    }
+</script>
+<script>
+    window.onload = function () {
+        var selectElement = document.getElementById('sizes');
+        for (var i = 0; i < selectElement.options.length; i++) {
+            if (selectElement.options[i].disabled) {
+                selectElement.value = selectElement.options[i].value;
+                break;
+            }
+        }
     }
 </script>
 <script>
@@ -278,7 +291,6 @@
         console.log(typeFlavor.value)
         typeFlavor.addEventListener("change", function () {
             const fla = document.querySelector(options.fla)
-            console.log(this.value, typeFlavor.value)
             fla.disabled = this.value == 0 ? true : false;
             setOptionForSelect(this.value)
         })
@@ -331,42 +343,50 @@
             $('form').serializeArray().forEach(function (value) {
                 dataProduct[value.name] = value.value
             })
+            dataProduct.id = document.querySelector("#id").value;
             // form.submit()
             const dataPsf = {
                 flavor: document.querySelector('#nameFlavor').value,
                 sizes: [],
-                prices: []
+                prices: [],
+                psfId: [],
             }
             const sizes = form.querySelectorAll(".item-size")
             sizes.forEach(function (item) {
+                console.log(item.querySelector('input').value)
                 dataPsf.sizes.push(item.querySelector('select').value)
                 dataPsf.prices.push(item.querySelector('input').value)
+                dataPsf.psfId.push(item.querySelector('select').getAttribute('data-psf'))
             })
-
             console.log(dataPsf)
 
-            // axios.post(window.location.href, dataProduct)
-            //     .then(response => response.data)
-            //     .then(data => {
-            //         dataPsf.sizes.forEach(function (value, index) {
-            //             const dt = {
-            //                 product_id: data.id,
-            //                 flavor_id: dataPsf.flavor,
-            //                 size_id: value,
-            //                 price: dataPsf.prices[index]
-            //             }
-            //             axios.post(window.location.origin + '/admin/psf/create', dt)
-            //         })
-            //         addDropbox({
-            //             urlApi: window.location.origin + '/admin/productimage/create',
-            //             listImg: '#uploadedAvatar',
-            //             product_id: data.id,
-            //             success: function () {
-            //                 window.location.href = window.location.origin + '/' + data.name + '/' + data.id
-            //             }
-            //         })
-            //     })
-            //     .catch(err => console.log('error: ', err))
+            axios.put(window.location.href, dataProduct)
+                .then(response => response.data)
+                .then(data => {
+                    dataPsf.sizes.forEach(function (value, index) {
+                        const dt = {
+                            product_id: data.id,
+                            flavor_id: dataPsf.flavor,
+                            size_id: value,
+                            price: dataPsf.prices[index]
+                        }
+                        if(!dataPsf.psfId[index]) {
+                            data.id= dataPsf.psfId[index],
+                            axios.put(window.location.origin + '/admin/psf/edit', dt)
+                        }
+                        else axios.post(window.location.origin + '/admin/psf/create', dt)
+                    })
+                    addDropbox({
+                        urlApi: window.location.origin + '/admin/productimage/edit',
+                        listImg: '#uploadedAvatar',
+                        product_id: data.id,
+                        currentUrl: @Html.Raw(Json.Serialize(img.url)),
+                        success: function () {
+                            window.location.href = window.location.origin + '/' + data.name + '/' + data.id
+                        }
+                    })
+                })
+                .catch(err => console.log('error: ', err))
         }
     })
 </script>

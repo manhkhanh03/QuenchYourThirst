@@ -28,5 +28,20 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
             return BadRequest(pi);
 
         }
+
+        [HttpPut]
+        //[ValidateAntiForgeryToken]
+        public IActionResult Edit([FromBody] ProductImage pi)
+        {
+
+            if (ModelState.IsValid)
+            {
+                _context.ProductImages.Update(pi);
+                _context.SaveChanges();
+                return Ok(pi);
+            }
+            return BadRequest(pi);
+
+        }
     }
 }

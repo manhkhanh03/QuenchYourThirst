@@ -12,6 +12,20 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
         private readonly DataContext _context;
         public ProductController(DataContext context) { _context = context; }
 
+        public IActionResult Index()
+        {
+            var products = (from p in _context.Products
+                            join i in _context.ProductImages on p.id equals i.product_id
+                            select new
+                            {
+                                products = p,
+                                images = i
+                            });
+            ViewData["actionName"] = "index";
+            ViewData["controllerName"] = "product";
+            return View(products);
+        }
+
         private async Task<List<ProductCategory>> PC()
         {
             var categories = await (from item in _context.ProductCategorys
@@ -78,7 +92,7 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
         public class SizePrice
         {
             public long id { get; set; }
-            public long idpsf { get; set; }
+            public long psf { get; set; }
             public string name { get; set; }
             public decimal price { get; set; }
             public bool isActive { get; set; }
@@ -97,22 +111,37 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
                                }).ToListAsync();
             sizes.Insert(0, new SizePrice()
             {
-                id = 0,
+                id = (long)0,
                 name = "----- Chọn -----",
                 isActive = false,
             });
             if (id != null && id != 0) { 
                 foreach (var item in sizes)
                 {
-                    var price = await (from i in _context.ProductSizeFlavors
+                    var psf = await (from i in _context.ProductSizeFlavors
                                        where i.product_id == id && item.id == i.size_id
-                                       select i.price).FirstOrDefaultAsync();
-
-                    item.price = price;
-                    item.isActive = price == 0 ? false : true;
+                                       select i).FirstOrDefaultAsync();
+                    if (psf != null)
+                    {
+                        item.price = psf.price;
+                        item.psf = psf.id;
+                        item.isActive = psf.price == 0 ? false : true;
+                    }
                 }
             } 
             return sizes;
+        }
+        public async Task<ProductImage> Img (long? id =  null) {
+            var img = await (from item in _context.ProductImages where item.product_id == id select item).FirstOrDefaultAsync();
+            return img;
+        }
+
+        public async Task<List<ProductSizeFlavor>> PSF(long id)
+        {
+            var psf = await (from item in _context.ProductSizeFlavors
+                             where item.product_id == id
+                             select item).ToListAsync();
+            return psf;
         }
 
         [HttpGet]
@@ -132,7 +161,6 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
         //[ValidateAntiForgeryToken]
         public IActionResult Create([FromBody] Product product)
         {
-
             if (ModelState.IsValid)
             {
                 _context.Products.Add(product);
@@ -140,21 +168,6 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
                 return Ok(product);
             }
             return BadRequest(product);
-        }
-
-        [HttpGet]
-        public IActionResult All()
-        {
-            var products = (from p in _context.Products
-                            join i in _context.ProductImages on p.id equals i.product_id
-                            select new
-                            {
-                                products = p,
-                                images = i
-                            });
-            ViewData["actionName"] = "all";
-            ViewData["controllerName"] = "product";
-            return View(products);
         }
 
         [HttpGet]
@@ -166,11 +179,24 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
             ViewBag.Status = await PS();
             ViewBag.Flavors = await Fl(id);
             ViewBag.Sizes = await Si(id);
+            ViewBag.Image = await Img(id);
+            ViewBag.PSF = await PSF(id);
 
             ViewData["actionName"] = "edit";
             ViewData["controllerName"] = "product";
             return View(product);
         }
 
+        [HttpPut]
+        public IActionResult Edit([FromBody] Product product) {
+
+            if (ModelState.IsValid)
+            {
+                _context.Products.Update(product);
+                _context.SaveChanges();
+                return Ok(product);
+            }
+            return BadRequest(product);
+        }
     }
 }
