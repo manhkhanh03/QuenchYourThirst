@@ -25,7 +25,7 @@
                             <div class="mb-3">
                                 <label class="form-label" for="basic-default-company">Levels</label>
                                 <!-- <input type="text" class="form-control" id="levels" asp-for="levels" placeholder="" /> -->
-                                <select class="select2 form-select" name="levels" id="levels" asp-for="parentID">
+                                <select class="select2 form-select" name="levels" id="levels" asp-for="parentId">
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                 </select>
@@ -33,7 +33,7 @@
                             <div class="mb-3">
                                 <label class="form-label" for="basic-default-company">ParentId</label>
                                 <!-- <input type="text" class="form-control" id="parentID" asp-for="parentID" placeholder="" /> -->
-                                <select id="parentId" name="parentID" class="select2 form-select" asp-for="parentID" asp-items="@(new SelectList(ViewBag.Menus, "Value", "Text" ))"></select>
+                                <select id="parentId" name="parentID" class="select2 form-select" asp-for="parentId" asp-items="@(new SelectList(ViewBag.Menus, "Value", "Text" ))"></select>
 
                             </div>
                             <div class="mb-3">

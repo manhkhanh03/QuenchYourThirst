@@ -1,4 +1,5 @@
 ﻿@using QuenchYourThirst.Areas.Admin.Models;
+@using QuenchYourThirst.Utilities;
 @model IList<AdminMenu>;
 @{
     string actionName = ViewData["actionName"].ToString();
@@ -73,7 +74,7 @@
         {
             var subMenu = Model.Where(m => m.parentLevel == item.id).OrderBy(menu => menu.order).ToList();
             <li class="menu-item @(controllerName == item.controllerName.Trim() ? "open active" : "")">
-                <a href="" class="menu-link @(subMenu.Any() ? "menu-toggle" : "")">
+                <a href="/@item.areaName/@item.controllerName/@item.actionName" class="menu-link @(subMenu.Any() ? "menu-toggle" : "")">
                     <i class="menu-icon tf-icons @item.icon"></i>
                     <div data-i18n="Analytics">@item.name</div>
                 </a>

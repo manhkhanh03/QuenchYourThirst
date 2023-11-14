@@ -19,7 +19,6 @@
     }
 
     function handle(e, options) {
-        console.log(e);
         // e.preventDefault();
 
         let isCheckInput = true;
@@ -34,11 +33,8 @@
                 }
             });
         });
-        console.log('1');
-        console.log(isCheckInput);
 
         if (isCheckInput) {
-            console.log('2')
             const data = {};
             Array.from(inputElement).forEach((ele) => {
                 data[ele.getAttribute('id')] = ele.value;
@@ -84,7 +80,7 @@ handleImport.isPassword = function (selector, message) {
     return {
         selector: selector,
         test: function (value) {
-            return value.length > 8 ? undefined : message;
+            return value.length >= 8 ? undefined : message;
         },
     };
 };

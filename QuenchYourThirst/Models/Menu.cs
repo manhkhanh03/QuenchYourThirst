@@ -14,10 +14,12 @@ namespace QuenchYourThirst.Models
         public string? controllerName { get; set; }
         public string? actionName { get; set; }
         public int levels { get; set; }
-        public int parentID { get; set; }
+        public int parentId { get; set; }
         public string? link { get; set; }
         public int menuOrder { get; set; }
         public int position { get; set; }
+        public string? icon { get; set; }
+
     }
 
 }

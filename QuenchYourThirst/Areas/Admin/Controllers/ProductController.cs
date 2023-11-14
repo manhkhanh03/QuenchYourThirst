@@ -198,5 +198,30 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
             }
             return BadRequest(product);
         }
+
+        [HttpGet]
+        public IActionResult Delete(long? id)
+        {
+            var product = _context.Products.Find(id);
+            if (product == null || id == 0) { return BadRequest("/not-found"); }
+
+            ViewData["actionName"] = "";
+            ViewData["controllerName"] = "product";
+
+            return View(product);
+        }
+
+        [HttpPost]
+        public IActionResult Delete(long id)
+        {
+            var p = _context.Products.Find(id);
+            if (p == null) return Redirect("/not-found");
+
+            var statusDeleteId = _context.StatusProducts.Where(s => s.name == "Xoá").Select(s => s.id).FirstOrDefault();
+            p.status_product_id = statusDeleteId;
+            _context.Products.Update(p);
+            _context.SaveChanges();
+            return Redirect("/admin/product/index");
+        }
     }
 }

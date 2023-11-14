@@ -94,7 +94,7 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
             if (menu == null) { return BadRequest(menu); }
             _context.Menus.Remove(menu);
             _context.SaveChanges();
-            return Redirect("index");
+            return Redirect("/admin/menu/index");
         }
     }
 }

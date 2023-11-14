@@ -1,8 +1,9 @@
 ﻿@using QuenchYourThirst.Models;
 @using QuenchYourThirst.Utilities;
 @model IList<Menu>
-
-
+@{
+	int totalCart = ViewData["Total"] != null ? int.Parse(ViewData["Total"].ToString()) : 0;
+}
 
 <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
 	<div class="container">
@@ -11,46 +12,78 @@
 			<span class="oi oi-menu"></span> Menu
 		</button>
 		<div class="collapse navbar-collapse" id="ftco-nav">
-			@foreach (var item in Model.Where(m => m.id == 7))
-			{
-
-				<div class="col-lg-4 text-center text-lg-start">
-					<a class="navbar-brand" href="">@item.menuName</a>
-				</div>
-
-			}
 			<ul class="navbar-nav ml-auto ">
-
 				@foreach (var menu in Model.Where(m => m.levels == 1).OrderBy(n => n.menuOrder))
 				{
-					var Pid = menu.id;
-					var Smenu = Model.Where(p => p.parentID == Pid).OrderBy(p => p.menuOrder).ToList();
+					var id = menu.id;
+					var Smenu = Model.Where(p => p.parentId == id).OrderBy(p => p.menuOrder).ToList();
 					var url = Functions.changeStringToString(menu.menuName);
+					@if (!string.IsNullOrEmpty(menu.link)) url = menu.link;
 
-					@if (Smenu.Count == 0)
+					@if (!string.IsNullOrEmpty(menu.icon))
 					{
-						@if (!string.IsNullOrEmpty(menu.link)) url = menu.link;
-						<li class="nav-item active"><a href="/@url" class="nav-link">@menu.menuName</a></li>
+						<li class="nav-item cta cta-colored">
+							<a href="/@url" class="nav-link">
+								<span class="@menu.icon"></span>
+								[@totalCart]
+							</a>
+						</li>
+					}
+					else if (Smenu.Count == 0)
+					{
+						<li class="nav-item"><a href="/@url" class="nav-link">@menu.menuName</a></li>
 					}
 					else
 					{
-						<li class="nav-item dropdown">
+						if (menu.menuName == "user")
+						{
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									@if (Functions.isLogin())
+									{
+										<span>@Functions._LoginName</span>
+										<img src="@(string.IsNullOrEmpty(Functions._Image) ? "https://yt3.ggpht.com/-pFCVDps2AdisQ3Qp_vABK8PzilJAkIKqAUKp_4KHNVUcGlnBLQs-Fp5eUl6biyp-EXVG1WEEQ=s900-c-k-c0x00ffffff-no-rj" : Functions._Image)" style="width: 20px; height: 20px; border-radius: 50%;" alt="">
+									}
+									else
+									{
+										<img src="https://yt3.ggpht.com/-pFCVDps2AdisQ3Qp_vABK8PzilJAkIKqAUKp_4KHNVUcGlnBLQs-Fp5eUl6biyp-EXVG1WEEQ=s900-c-k-c0x00ffffff-no-rj" style="width: 20px; height: 20px; border-radius: 50%;" alt="">
+									}
+								</a>
 
+								<div class="dropdown-menu" aria-labelledby="dropdown04">
+									@if (Functions.isLogin())
+									{
+										@foreach (var smn in Smenu)
+										{
+											var url1 = Functions.changeStringToString(smn.menuName);
+											@if (!string.IsNullOrEmpty(smn.link)) url1 = smn.link;
+											<a href="/@url1" class="dropdown-item">@smn.menuName</a>
+										}
+										@*  <a href="/" class="dropdown-item">Đăng xuất</a>
+										 <a href="/home/logout" class="dropdown-item">Đăng xuất</a> *@
+									}
+									else
+									{
+										<a href="/login" class="dropdown-item">Đăng nhập</a>
+									}
+								</div>
+							</li>
+							continue;
+						}
+						<li class="nav-item dropdown">
 							<a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@menu.menuName</a>
 							<div class="dropdown-menu" aria-labelledby="dropdown04">
 								@foreach (var smn in Smenu)
 								{
-									<a href="" class="dropdown-item">@smn.menuName</a>
+									var url1 = Functions.changeStringToString(smn.menuName);
+									@if (!string.IsNullOrEmpty(smn.link)) url1 = smn.link;
+									<a href="/@url1" class="dropdown-item">@smn.menuName</a>
 								}
-
 							</div>
 						</li>
 					}
 				}
-				<li class="nav-item cta cta-colored"><a href="cart.html" class="nav-link"><span class="icon-shopping_cart"></span>[0]</a></li>
-
-			</ul>
-
+				</ul>
 		</div>
 	</div>
 </nav>

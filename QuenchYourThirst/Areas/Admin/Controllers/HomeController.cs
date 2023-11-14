@@ -7,6 +7,8 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
 	{
 		public IActionResult Index()
 		{
+			ViewData["actionName"] = "index";
+			ViewData["controllerName"] = "home";
 			return View();
 		}
 	}

@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System;
 using Microsoft.AspNetCore.WebUtilities;
-using System.Collections.Generic;
+using QuenchYourThirst.Utilities;
 
 
 namespace QuenchYourThirst.Controllers
@@ -54,7 +54,7 @@ namespace QuenchYourThirst.Controllers
 
 		[HttpGet]
 		[Route("/shop")]
-		public async Task<IActionResult> Test([FromQuery] Dictionary<string, string> request)
+		public async Task<IActionResult> Shop([FromQuery] Dictionary<string, string> request)
 		{
 			int per_page = 0;
 			int currentPage = 0;
@@ -146,6 +146,22 @@ namespace QuenchYourThirst.Controllers
 		public IActionResult NotFound404()
 		{
 			return View();
+		}
+
+		[HttpGet]
+		[Route("/home/logout")]
+		public IActionResult Logout()
+		{
+			Functions._Id = 0;
+			Functions._Email = string.Empty;
+			Functions._LoginName = string.Empty;
+			Functions._UserName = String.Empty;
+			Functions._RoleId = 0;
+			Functions._Email = String.Empty;
+			Functions._Address = String.Empty;
+			Functions._Phone = String.Empty;
+			Functions._Image = String.Empty;
+			return RedirectToAction("index", "home");
 		}
 
 

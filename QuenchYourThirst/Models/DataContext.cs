@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using QuenchYourThirst.Areas.Admin.Models;
-using QuenchYourThirst.Models;
-﻿﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
-using QuenchYourThirst.Models;
 using System;
+using QuenchYourThirst.Utilities;
 
 namespace QuenchYourThirst.Models
 {
@@ -19,14 +18,26 @@ namespace QuenchYourThirst.Models
         public DbSet<ProductImage> ProductImages { get; set; }
         public DbSet<StatusProduct> StatusProducts { get; set; }
         public DbSet<ProductCategory> ProductCategorys { get; set; }
+        public DbSet<Cart> Carts { get; set; }
         public DbSet<AdminMenu> AdminMenus { get; set; }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<AdminUser> AdminUsers { get; set; }
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>(entity =>
             {
                 entity.Property(e => e.created_at)
-                    .HasDefaultValueSql("GETDATE()");
+                    .HasDefaultValueSql("dbo.GetTodayDateTime()");
             });
+
+            modelBuilder.Entity<AdminUser>(entity =>
+			{
+                //entity.Property(e => e.created_at)
+                //    .ValueGeneratedOnAdd(() => { return await Functions.getCurrentDate(); });
+                entity.Property(e => e.role_id)
+                    .HasDefaultValue(1);
+            });
+
             //modelBuilder.Entity<ProductSizeFlavor>()
             //    .HasMany(psf => psf.Product)
             //    .WithOne(p => p.ProductSizeFlavor)
