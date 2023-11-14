@@ -13,7 +13,7 @@ namespace QuenchYourThirst.Components
         }
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var listofDeal = (from p in _context.Deal_of_the_day
+            var listofDeal = (from p in _context.Deal_of_the_days
                               select p).ToList();
             return await Task.FromResult((IViewComponentResult)View("Default", listofDeal));
         }

@@ -14,7 +14,7 @@ namespace QuenchYourThirst.Components
 
 		public async Task<IViewComponentResult> InvokeAsync()
 		{
-			var listoPost = (from p in _context.Poster
+			var listoPost = (from p in _context.Posters
 							 where (p.PotID == 1)
 							 select p).ToList();
 			return await Task.FromResult((IViewComponentResult)View("Default", listoPost));

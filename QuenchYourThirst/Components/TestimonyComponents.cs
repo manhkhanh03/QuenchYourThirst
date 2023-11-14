@@ -15,7 +15,7 @@ namespace QuenchYourThirst.Components
         }
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var listofTestimony = (from p in _context.Testimony
+            var listofTestimony = (from p in _context.Testimonys
                                    select p).ToList();
             return await Task.FromResult((IViewComponentResult)View("Default", listofTestimony));
         }

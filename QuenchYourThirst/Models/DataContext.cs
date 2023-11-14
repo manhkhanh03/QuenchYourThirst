@@ -21,10 +21,14 @@ namespace QuenchYourThirst.Models
         public DbSet<StatusProduct> StatusProducts { get; set; }
         public DbSet<ProductCategory> ProductCategorys { get; set; }
         public DbSet<Cart> Carts { get; set; }
-        public DbSet<AdminMenu> AdminMenus { get; set; }
-        public DbSet<Role> Roles { get; set; }
-        public DbSet<AdminUser> AdminUsers { get; set; }
-        public DbSet<Category> Categorys { get; set; }
+		public DbSet<AdminMenu> AdminMenus { get; set; }
+		public DbSet<Role> Roles { get; set; }
+		public DbSet<AdminUser> AdminUsers { get; set; }
+		public DbSet<Category> Categorys { get; set; }
+		public DbSet<Deal_of_the_day> Deal_of_the_days { get; set; }
+		public DbSet<Poster> Posters { get; set; }
+		public DbSet<Services> Services { get; set; }
+		public DbSet<Testimony> Testimonys { get; set; }
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>(entity =>
