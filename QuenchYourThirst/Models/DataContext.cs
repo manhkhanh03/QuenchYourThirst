@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using QuenchYourThirst.Areas.Admin.Models;
-using Microsoft.AspNetCore.Http;
+using QuenchYourThirst.Models;
+﻿﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
+using QuenchYourThirst.Models;
 using System;
 using QuenchYourThirst.Utilities;
 
@@ -22,6 +24,7 @@ namespace QuenchYourThirst.Models
         public DbSet<AdminMenu> AdminMenus { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<AdminUser> AdminUsers { get; set; }
+        public DbSet<Category> Categorys { get; set; }
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>(entity =>
