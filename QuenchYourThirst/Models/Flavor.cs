@@ -9,8 +9,9 @@ namespace QuenchYourThirst.Models
     {
         [Key]
         public long id {  get; set; }
-        public string? name { get; set; }
-        public string? type { get; set; }
+        public string name { get; set; }
+        [ForeignKey("TypeFlavor")]
+        public long type_flavor_id { get; set; }
         //public ICollection<ProductSizeFlavor> ProductSizeFlavor { get; set; }
 
     }

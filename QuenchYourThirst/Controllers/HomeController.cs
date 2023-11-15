@@ -66,6 +66,7 @@ namespace QuenchYourThirst.Controllers
 			int offset = (currentPage - 1) * per_page;
 			int limit = per_page;
 			int category = request.ContainsKey("c") ? int.Parse(request["c"]) : 0;
+			
 			var products = (from p in _context.Products
 							join psf in _context.ProductSizeFlavors on p.id equals psf.product_id into psfGroup
 							join img in _context.ProductImages on p.id equals img.product_id

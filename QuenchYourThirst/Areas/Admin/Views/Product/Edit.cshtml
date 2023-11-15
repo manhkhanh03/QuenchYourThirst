@@ -1,0 +1,392 @@
+﻿@model QuenchYourThirst.Models.Product;
+
+@{
+Layout = "~/Areas/Admin/Views/Shared/_layout.cshtml";
+var flavors = ViewBag.Flavors;
+var sizes = ViewBag.Sizes;
+var img = ViewBag.Image;
+var psf = ViewBag.PSF;
+}
+<!-- / Navbar -->
+<!-- Content wrapper -->
+<div class="content-wrapper">
+    <!-- Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Account Settings /</span> Account</h4>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <h3 class="card-header">Thêm mới sản phẩm</h3>
+                    <div class="card-body">
+                        <div class="d-flex align-items-start align-items-sm-center gap-4">
+                            <img src="@img.url" alt="user-avatar" class="d-block rounded" height="100" width="100" id="uploadedAvatar" />
+                            <div class="button-wrapper">
+                                <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
+                                    <span class="d-none d-sm-block">Upload new photo</span>
+                                    <i class="bx bx-upload d-block d-sm-none"></i>
+                                    <input type="file" id="upload" class="account-file-input" hidden accept="image/png, image/jpeg" />
+                                </label>
+                                <button type="button" class="btn btn-outline-secondary account-image-reset mb-4">
+                                    <i class="bx bx-reset d-block d-sm-none"></i>
+                                    <span class="d-none d-sm-block">Reset</span>
+                                </button>
+
+                                <p class="text-muted mb-0">Allowed JPG or PNG. Max size of 800Kb</p>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-0" />
+                    <div class="card-body">
+                        <form id="formAccountSettings" method="POST">
+                            <div class="row">
+                                <h5>Thông tin cơ bản</h5>
+                                <input class="form-control" type="hidden" id="id" name="id" asp-for="id" />
+                                <div class="mb-3 col-md-6">
+                                    <label for="name" class="form-label">Tên sản phẩm</label>
+                                    <input class="form-control" type="text" id="name" name="name" asp-for="name" />
+                                    <p class="form-message"></p>
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label" for="product_category_id">Trạng thái sản phẩm</label>
+                                    <select id="status_product_id" name="status_product_id" class="select2 form-select" asp-for="status_product_id" asp-items="@(new SelectList(ViewBag.Status, "id", "name" ))"></select>
+                                    <p class="form-message"></p>
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label for="quantity" class="form-label">Số lượng</label>
+                                    <input class="form-control" type="text" id="quantity" name="quantity" placeholder="example: 1000" asp-for="quantity" />
+                                    <p class="form-message"></p>
+                                </div>
+                                <hr class="my-0" />
+                                <br />
+                                <h5 style="margin-top:16px">Thông tin chi tiết</h5>
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label" for="product_category_id">Loại đồ uống</label>
+                                    <select id="product_category_id" name="product_category_id" class="select2 form-select" asp-for="product_category_id" asp-items="@(new SelectList(flavors["typeFlavors"], "id" , "name" ))"></select>
+                                    <p class="form-message"></p>
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label" for="nameFlavor">Hương vị</label>
+                                    <select id="nameFlavor" class="select2 form-select" disabled>
+                                        @foreach (var item in flavors["flavors"])
+                                        {
+                                        if (item.isActive)
+                                        {
+                                        <option value="@item.id">@item.name</option>
+                                        }
+                                        }
+                                    </select>
+                                    <p class="form-message"></p>
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label" for="sizes">Kích cỡ</label>
+                                    @foreach (var item in sizes)
+                                    {
+                                    @if(item.isActive)
+                                    {
+                                    <div class="row item-size" style="position: relative; margin-left: 1.625rem;">
+                                        <select type="text" class="form-control width-auto size-id" readonly="" data-psf="@item.psf" value="@item.name" style="margin: 10px 0px;">
+                                            <option value="@item.id">@item.name</option>
+                                        </select>
+                                        <input type="text" class="form-control width-auto size-value" style="margin: 10px 0px;" value="@item.price" placeholder="Nhập giá...example: 10-100">
+                                        <p class="form-message" style="bottom: -23px;"></p>
+                                    </div>
+                                    }
+                                    }
+                                    <select id="sizes" class="select2 form-select" style="margin-top: 10px;">
+                                        @foreach (var item in sizes)
+                                        {
+                                        @if(item.isActive)
+                                        {
+                                        <option value="@item.id" disabled>@item.name</option>
+                                        continue;
+                                        }
+                                        <option value="@item.id">@item.name</option>
+                                        }
+                                    </select>
+                                    <p class="form-message"></p>
+                                </div>
+                                <div class="mb-3 col-md-6"></div>
+                            </div>
+                            <div class="mt-2">
+                                <button type="submit" class="btn btn-primary me-2">Save changes</button>
+                                <button type="reset" class="btn btn-outline-secondary">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /Account -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- / Content -->
+    <!-- Footer -->
+    <footer class="content-footer footer bg-footer-theme">
+        <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+            <div class="mb-2 mb-md-0">
+                ©
+                <script>
+                    document.write(new Date().getFullYear());
+                </script>
+                , made with ❤️ by
+                <a href="https://themeselection.com" target="_blank" class="footer-link fw-bolder">ManhKhanh DT</a>
+            </div>
+        </div>
+    </footer>
+    <!-- / Footer -->
+
+    <div class="content-backdrop fade"></div>
+</div>
+<!-- Content wrapper -->
+<script src="~/admin/assets/js/pages-account-settings-account.js"></script>
+<script src="~/admin/assets/vendor/libs/jquery/jquery.js"></script>
+<script src="~/admin/assets/vendor/libs/popper/popper.js"></script>
+<script src="~/admin/assets/vendor/js/bootstrap.js"></script>
+<script src="~/admin/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+
+<script src="~/admin/assets/vendor/js/menu.js"></script>
+<!-- endbuild -->
+<!-- Vendors JS -->
+<!-- Main JS -->
+<script src="~/admin/assets/js/main.js"></script>
+
+<!-- Page JS -->
+<script src="~/admin/assets/js/pages-account-settings-account.js"></script>
+
+<!-- Place this tag in your head or just before your close body tag. -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropbox.js/10.11.0/Dropbox-sdk.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js" integrity="sha512-WrdC3CE9vf1nBf58JHepuWT4x24uTacky9fuzw2g/3L9JkihgwZ6Cfv+JGTtNyosOhEmttMtEZ6H3qJWfI7gIQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    let myAccessToken
+    let isProduct = false, isImage = false, isflavor = false;
+    const arrayIdImageDeleted = {
+        ids: {}
+    }
+
+    function getAccessToken() {
+        // const clientId = 'aqbp003l10tbnxa';
+        // const clientSecret = 'e3sqmzi5ikxdi5t';
+        // const refreshToken = '0S48ap8OcPoAAAAAAAAArq42lkHFRwmhf7X9OzU8NBM';
+        const clientId = '7tdbae4pljk4k1b';
+        const clientSecret = 'fvfq3y7obvtb4oa';
+        const refreshToken = 'hptaNreC2NIAAAAAAAAAASmtgmed1VIMx-PrulT57JTrCH8-1B0o5pX-KCrxcntw';
+
+        const url = 'https://api.dropboxapi.com/oauth2/token';
+
+        const data = new URLSearchParams();
+        data.append('grant_type', 'refresh_token');
+        data.append('refresh_token', refreshToken);
+        data.append('client_id', clientId);
+        data.append('client_secret', clientSecret);
+        axios.post(url, data)
+            .then(response => {
+                myAccessToken = response.data.access_token;
+            })
+            .catch(error => {
+                console.error('Error getting tokens:', error);
+            });
+    }
+
+    getAccessToken()
+
+    function addDropbox(options) {
+        const listImg = document.querySelectorAll(options.listImg)
+        let file;
+        // console.log(listImg)
+
+        var dbx = new Dropbox.Dropbox({
+            accessToken: myAccessToken,
+        });
+        var reader = new FileReader();
+        for (let key = 0; key < listImg.length; key++) {
+            if (options.originalImage) {
+                const isTrue = options.originalImage.filter((img) => {
+                    return img.url == listImg[key].src
+                })
+                if (isTrue.length != 0)
+                    continue;
+            }
+            var imageUrl = listImg[key].src;
+            var fileName = imageUrl.split('/').pop() + '.jpg';
+            // if(options.currentUrl != imageUrl) {
+            axios.get(imageUrl, { responseType: 'arraybuffer' })
+                .then(response => {
+                    var fileContent = response.data;
+                    dbx.filesUpload({
+                        path: '/' + fileName,
+                        contents: fileContent
+                    })
+                        .then(function (response) {
+                            return dbx.sharingCreateSharedLinkWithSettings({
+                                path: '/' + fileName
+                            });
+                        })
+                        .then(function (response) {
+                            const urlImg = response.result.url.slice(0, -1) + '1';
+                            options.url = urlImg
+                            handleUploadImgProduct(options)
+                        })
+                        .catch(function (error) {
+                            console.error('Error uploading file to Dropbox:', error);
+                        });
+                })
+                .catch(error => {
+                    console.error('Error fetching image:', error);
+                });
+            // }
+        }
+    }
+
+    function handleUploadImgProduct(options) {
+        return new Promise((resolve, reject) => {
+            const data = {
+                id: @Html.Raw(Json.Serialize(img.id))
+                product_id: options.product_id,
+                url: options.url,
+            }
+
+            axios.put(options.urlApi, data)
+                .then(data => {
+                    console.log("Success: ", data)
+                    options.success()
+                    resolve()
+                })
+                .catch(error => {
+                    console.error('error: ', error);
+                    reject()
+                })
+        })
+    }
+</script>
+<script>
+    window.onload = function () {
+        var selectElement = document.getElementById('sizes');
+        for (var i = 0; i < selectElement.options.length; i++) {
+            if (selectElement.options[i].disabled) {
+                selectElement.value = selectElement.options[i].value;
+                break;
+            }
+        }
+    }
+</script>
+<script>
+    // console.log(abc)
+    function setOptionForSelect(id) {
+        const elementFlavor = document.querySelector('#nameFlavor')
+        const htmls = fls.map(function (item, index) {
+            if (item.type_flavor_id == id || item.type_flavor_id == 0) {
+                return `
+                            <option value="${item.id}">${item.name}</option>
+                        `
+            }
+        })
+        elementFlavor.innerHTML = htmls.join('')
+    }
+
+    function setFlavor(options) {
+        const typeFlavor = document.querySelector(options.typeFlavor)
+        console.log(typeFlavor.value)
+        typeFlavor.addEventListener("change", function () {
+            const fla = document.querySelector(options.fla)
+            fla.disabled = this.value == 0 ? true : false;
+            setOptionForSelect(this.value)
+        })
+    }
+
+    setFlavor({
+        typeFlavor: "#product_category_id",
+        fla: "#nameFlavor"
+    })
+
+    function handleSize(options) {
+        const selectorSize = document.querySelector(options.size)
+        selectorSize.addEventListener('change', function (e) {
+            if (this.value != 0) {
+                const option = this.querySelector(`[value="${this.value}"]`);
+                option.disabled = true;
+                let newInput = document.createElement('div');
+                newInput.className = "row item-size";
+                newInput.style.position = 'relative'
+                newInput.style.setProperty('margin-left', '1.625rem');
+                newInput.innerHTML = `
+                                    <select type="text" class="form-control width-auto size-id" readonly value=${option.innerText} style="margin: 10px 0px;">
+                                        <option value="${option.value}">${option.innerText}</option>
+                                    </select>
+                                    <input type="text" class="form-control width-auto size-value" style="margin: 10px 0px;" placeholder="Nhập giá...example: 10-100">
+                                    <p class="form-message" style="bottom: -23px;"></p>
+                        `;
+                this.parentNode.insertBefore(newInput, this)
+
+            }
+        })
+    }
+
+    handleSize({
+        size: '#sizes'
+    })
+
+    handleImport({
+        form: '#formAccountSettings',
+        formInput: '.form-control',
+        formMessage: '.form-message',
+        rules: [
+            handleImport.isFocus('#name', 'Vui lòng nhập tên sản phẩm'),
+            handleImport.isFocus('#quantity', 'Vui lòng nhập số lượng sản phẩm'),
+            handleImport.isChange('.form-select', 'Vui lòng chọn trường này'),
+            handleImport.isFocus('.size-value', 'Vui lòng nhập giá tiền theo size'),
+        ],
+        isSuccess: function (data, form) {
+            const dataProduct = {}
+            $('form').serializeArray().forEach(function (value) {
+                dataProduct[value.name] = value.value
+            })
+            dataProduct.id = document.querySelector("#id").value;
+            // form.submit()
+            const dataPsf = {
+                flavor: document.querySelector('#nameFlavor').value,
+                sizes: [],
+                prices: [],
+                psfId: [],
+            }
+            const sizes = form.querySelectorAll(".item-size")
+            sizes.forEach(function (item) {
+                console.log(item.querySelector('input').value)
+                dataPsf.sizes.push(item.querySelector('select').value)
+                dataPsf.prices.push(item.querySelector('input').value)
+                dataPsf.psfId.push(item.querySelector('select').getAttribute('data-psf'))
+            })
+            console.log(dataPsf)
+
+            axios.put(window.location.href, dataProduct)
+                .then(response => response.data)
+                .then(data => {
+                    dataPsf.sizes.forEach(function (value, index) {
+                        const dt = {
+                            product_id: data.id,
+                            flavor_id: dataPsf.flavor,
+                            size_id: value,
+                            price: dataPsf.prices[index]
+                        }
+                        if(!dataPsf.psfId[index]) {
+                            data.id= dataPsf.psfId[index],
+                            axios.put(window.location.origin + '/admin/psf/edit', dt)
+                        }
+                        else axios.post(window.location.origin + '/admin/psf/create', dt)
+                    })
+                    addDropbox({
+                        urlApi: window.location.origin + '/admin/productimage/edit',
+                        listImg: '#uploadedAvatar',
+                        product_id: data.id,
+                        currentUrl: @Html.Raw(Json.Serialize(img.url)),
+                        success: function () {
+                            window.location.href = window.location.origin + '/' + data.name + '/' + data.id
+                        }
+                    })
+                })
+                .catch(err => console.log('error: ', err))
+        }
+    })
+</script>

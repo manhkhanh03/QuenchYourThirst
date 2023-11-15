@@ -1,0 +1,52 @@
+﻿<!-- Responsive Table -->
+@using QuenchYourThirst.Models;
+@model IList<Menu>;
+
+<style>
+    tbody td img {
+        width: 74px;
+        height: 68px;
+        border-radius: 6px;
+    }
+</style>
+<div class="card">
+    <h5 class="card-header">Danh sách menu</h5>
+    <div class="table-responsive text-nowrap">
+        <table class="table">
+            <thead>
+                <tr class="text-nowrap">
+                    <th>#</th>
+                    <th>Tiêu đề</th>
+                    <th>Mức</th>
+                    <th>Menu cha</th>
+                    <th>Thứ tự</th>
+                    <th>Đường dẫn</th>
+                    <th>Ẩn/hiện</th>
+                    <th>Chức năng</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int index = 1;
+                }
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <th scope="row">@(index++)</th>
+                        <td>@item.menuName</td>
+                        <td>@item.levels</td>
+                        <td>@item.parentID</td>
+                        <td>@item.menuOrder</td>
+                        <td>@item.link</td>
+                        <td>@item.isActive</td>
+                        <td>
+                            <a asp-area="admin" asp-controller="menu" asp-action="edit" asp-route-id="@item.id" class="btn btn-primary" title="Sửa menu"><i class='bx bxs-edit-alt'></i></a>
+                            <a asp-area="admin" asp-controller="menu" asp-action="delete" asp-route-id="@item.id" class="btn btn-danger" title="Xoá menu"><i class="fa-solid fa-trash-can"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<!--/ Responsive Table -->
