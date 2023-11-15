@@ -5,11 +5,12 @@
     var countQueryString = ViewData["countQueryString"];
     var queryStringP_PP = ViewData["p_pp"];
     var queryStringC = ViewData["c"];
+    var cate = ViewData["category"];
 }
 @using Newtonsoft.Json.Linq;
 @using Newtonsoft.Json;
 <script>
-    const values = @Html.Raw(Json.Serialize(Model));
+    const values = @Html.Raw(Json.Serialize(cate));
     console.log(values)
     console.log("2: ", @Html.Raw(Json.Serialize(countQueryString)))
 </script>

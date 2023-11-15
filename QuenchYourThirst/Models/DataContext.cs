@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using QuenchYourThirst.Models;
 ﻿﻿using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
+
 using Newtonsoft.Json.Linq;
-using QuenchYourThirst.Models;
+
 using System;
 
 namespace QuenchYourThirst.Models
@@ -61,10 +61,14 @@ namespace QuenchYourThirst.Models
 
         public DbSet<ProductCategory> ProductCategorys { get; set; }
 
-        public DbSet<Bangtenweb> Bangtenwebs { get; set; }
-        //Đổi lại ten ni cho t cấy này, không có tiếng việt trong code bangtenweb ????
+       
+       
         public DbSet<Menu> Menus { get; set; }
-        public DbSet<Postss> Postss { get; set; }
-      
+        public DbSet<Poster> Poster { get; set; }
+        public DbSet<Services> Services { get; set; }
+        public DbSet<Category> Category { get; set; }
+        public DbSet<Testimony> Testimony { get; set; }
+        public DbSet<Deal_of_the_day> Deal_of_the_day { get; set; }
+
     }
 }
