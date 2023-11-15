@@ -66,21 +66,6 @@ namespace QuenchYourThirst.Controllers
 			int offset = (currentPage - 1) * per_page;
 			int limit = per_page;
 			int category = request.ContainsKey("c") ? int.Parse(request["c"]) : 0;
-			//var products = _context.ProductSizeFlavors
-			//    .Include(psf => psf.Product)
-			//        .ThenInclude(pc => pc.ProductCategory)
-			//    .Where(psf => psf.Product.status_product_id == 1)
-			//    .Where(psf => psf.Product.product_category_id == category || category == 0)
-			//    .Select(psf => new
-			//    {
-			//        psfs = psf,
-			//        products = psf.Product,
-			//        imgs = psf.Product.ProductImage.First(),
-
-			//    })
-			//    .Skip(offset)
-			//    .Take(limit)
-			//    .ToList();
 			var products = (from p in _context.Products
 							join psf in _context.ProductSizeFlavors on p.id equals psf.product_id into psfGroup
 							join img in _context.ProductImages on p.id equals img.product_id

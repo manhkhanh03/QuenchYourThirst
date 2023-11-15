@@ -1,0 +1,25 @@
+﻿@using QuenchYourThirst.Models
+@model IList<Deal_of_the_day>
+
+    @foreach(var item in Model)
+    {
+        <section class="ftco-section img" style="background-image: url(@item.Images);">
+            <div class="container">
+                <div class="row justify-content-end">
+                    <div class="col-md-6 heading-section ftco-animate deal-of-the-day ftco-animate">
+                        <span class="subheading">@item.MenuName</span>
+                        <h2 class="mb-4">@item.Title</h2>
+                        <p>@item.Contents</p>
+                        <h3><a href="#">Spinach</a></h3>
+                        <span class="price">$10 <a href="#">@item.Price_discount</a></span>
+                        <div id="timer" class="d-flex mt-5">
+                            <div class="time" id="@item.Days"></div>
+                            <div class="time pl-3" id="Hours"></div>
+                            <div class="time pl-3" id="Minutes"></div>
+                            <div class="time pl-3" id="Seconds"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    }
