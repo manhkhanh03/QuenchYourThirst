@@ -62,37 +62,6 @@ namespace QuenchYourThirst.Controllers
             per_page = per_page == 0 ? 24 : per_page;
             currentPage = currentPage == 0 ? 1 : currentPage;
 
-<<<<<<< Updated upstream
-            int offset = (currentPage - 1) * per_page;
-            int limit = per_page;
-            int category = request.ContainsKey("c") ? int.Parse(request["c"]) : 0;
-            //var products = _context.ProductSizeFlavors
-            //    .Include(psf => psf.Product)
-            //        .ThenInclude(pc => pc.ProductCategory)
-            //    .Where(psf => psf.Product.status_product_id == 1)
-            //    .Where(psf => psf.Product.product_category_id == category || category == 0)
-            //    .Select(psf => new
-            //    {
-            //        psfs = psf,
-            //        products = psf.Product,
-            //        imgs = psf.Product.ProductImage.First(),
-
-            //    })
-            //    .Skip(offset)
-            //    .Take(limit)
-            //    .ToList();
-            var products = (from p in _context.Products
-                            join psf in _context.ProductSizeFlavors on p.id equals psf.product_id into psfGroup
-                            join img in _context.ProductImages on p.id equals img.product_id
-                            where p.status_product_id == 1
-                            where p.product_category_id == category || category == 0
-                            select new
-                            {
-                                prices = psfGroup.Select(psf => psf.price).OrderBy(psf => psf).ToList(),
-                                products = p,
-                                imgs = img,
-                            }).Skip(offset).Take(limit).ToList();
-=======
 			int offset = (currentPage - 1) * per_page;
 			int limit = per_page;
 			int category = request.ContainsKey("c") ? int.Parse(request["c"]) : 0;
@@ -108,7 +77,6 @@ namespace QuenchYourThirst.Controllers
 								products = p,
 								imgs = img,
 							}).Skip(offset).Take(limit).ToList();
->>>>>>> Stashed changes
 
             ViewData["totalPage"] = (int)(totalProduct() / limit);
             ViewData["currentPage"] = currentPage;
