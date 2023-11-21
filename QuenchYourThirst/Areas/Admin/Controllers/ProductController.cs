@@ -15,7 +15,7 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-			if (!Functions.isLogin()) return RedirectToAction("index", "login", new { area = "" });
+			if (!Functions.isAdmin()) return RedirectToAction("index", "home", new { area = "" });
             var products = (from p in _context.Products
                             join i in _context.ProductImages on p.id equals i.product_id
                             select new
@@ -149,7 +149,7 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-			if (!Functions.isLogin()) return RedirectToAction("index", "login", new { area = "" });
+			if (!Functions.isAdmin()) return RedirectToAction("index", "home", new { area = "" });
 
 			ViewBag.Categories = await PC();
             ViewBag.Status = await PS();
@@ -178,7 +178,7 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(long id)
         {
-			if (!Functions.isLogin()) return RedirectToAction("index", "login", new { area = "" });
+			if (!Functions.isAdmin()) return RedirectToAction("index", "home", new { area = "" });
 
 			var product = _context.Products.Find(id);
             if (product == null || id == 0) return Redirect("/not-found");
@@ -210,7 +210,7 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Delete(long? id)
         {
-			if (!Functions.isLogin()) return RedirectToAction("index", "login", new { area = "" });
+			if (!Functions.isAdmin()) return RedirectToAction("index", "home", new { area = "" });
 
 			var product = _context.Products.Find(id);
             if (product == null || id == 0) { return BadRequest("/not-found"); }

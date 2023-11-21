@@ -27,13 +27,10 @@
                 </tr>
             </thead>
             <tbody>
-                @{
-                    int index = 1;
-                }
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <th scope="row">@(index++)</th>
+                        <th scope="row">@item.id</th>
                         <td>@item.menuName</td>
                         <td>@item.levels</td>
                         <td>@item.parentId</td>

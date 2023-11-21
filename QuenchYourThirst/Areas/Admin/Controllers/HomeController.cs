@@ -8,7 +8,7 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
 	{
 		public IActionResult Index()
 		{
-			if (!Functions.isLogin()) return RedirectToAction("index", "login", new { area = ""}); 
+			if (!Functions.isAdmin()) return RedirectToAction("index", "home", new { area = ""}); 
 			ViewData["actionName"] = "index";
 			ViewData["controllerName"] = "home";
 			return View();

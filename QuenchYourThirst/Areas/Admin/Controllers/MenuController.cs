@@ -13,7 +13,7 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
         public MenuController(DataContext context) { _context = context; }
         public IActionResult Index()
         {
-			if (!Functions.isLogin()) return RedirectToAction("index", "login", new { area = "" });
+			if (!Functions.isAdmin()) return RedirectToAction("index", "home", new { area = "" });
 
 			var menus = _context.Menus.OrderBy(m => m.id).ToList();
             ViewData["actionName"] = "";
@@ -23,7 +23,7 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
 
         public IActionResult Create()
 		{
-			if (!Functions.isLogin()) return RedirectToAction("index", "login", new { area = "" });
+			if (!Functions.isAdmin()) return RedirectToAction("index", "home", new { area = "" });
 
             ViewBag.Menus = Menus();
             ViewData["actionName"] = "create";
@@ -61,7 +61,7 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
 
         public IActionResult Edit(long id)
         {
-            if (!Functions.isLogin()) return RedirectToAction("index", "login", new { area = "" });
+            if (!Functions.isAdmin()) return RedirectToAction("index", "home", new { area = "" });
 
             var menu = _context.Menus.FirstOrDefault(m => m.id == id);
             if (menu == null || id == 0 || id == null) { return Redirect("/not-found"); }
@@ -89,7 +89,7 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Delete(long? id = 0)
 		{
-			if (!Functions.isLogin()) return RedirectToAction("index", "login", new { area = "" });
+			if (!Functions.isAdmin()) return RedirectToAction("index", "home", new { area = "" });
 
 			var menu = _context.Menus.Find((int)id);
 			if (menu == null) { return Redirect("/not-found"); }

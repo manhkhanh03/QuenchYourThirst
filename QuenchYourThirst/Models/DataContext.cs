@@ -3,7 +3,6 @@ using QuenchYourThirst.Areas.Admin.Models;
 using QuenchYourThirst.Models;
 ﻿﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
-using QuenchYourThirst.Models;
 using System;
 using QuenchYourThirst.Utilities;
 
@@ -32,6 +31,7 @@ namespace QuenchYourThirst.Models
 		public DbSet<Order> Orders { get; set; }
 		public DbSet<PaymentMethod> PaymentMethods { get; set; }
 		public DbSet<OrderCart> OrderCarts { get; set; }
+		public DbSet<StatusOrder> StatusOrders { get; set; }
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>(entity =>

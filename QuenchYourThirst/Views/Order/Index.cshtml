@@ -1,0 +1,132 @@
+﻿@using QuenchYourThirst.Utilities;
+<style>
+	.btn {
+		border-radius: 8px !important;
+	}
+
+	.btn-group {
+		width: 100%;
+		margin-bottom: 30px;
+	}
+</style>
+<script>
+	const dataOrderAll = @Html.Raw(Json.Serialize(Model));
+</script>
+<section class="ftco-section ftco-cart">
+	<div class="container">
+		<div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+			@{
+				int i = 0;
+			}
+			@foreach (var item in ViewBag.StatusOrder)
+			{
+				if (i++ == 0)
+				{
+					<input type="radio" class="btn-check" value="@item.id" checked name="@Functions.changeStringToString(item.name)" id="@Functions.changeStringToString(item.name)" autocomplete="off">
+					<label onclick="checked(this)" class="btn btn-outline-primary" for="btnradio1">@item.name</label>
+					continue;
+				}
+				<input type="radio"  class="btn-check" value="@item.id" name="@Functions.changeStringToString(item.name)" id="@Functions.changeStringToString(item.name)" autocomplete="off">
+				<label onclick="checked(this)" class="btn btn-outline-primary" for="btnradio1">@item.name</label>
+			}
+			<script>
+				function checked(thisE) {
+					Array.from(thisE.parentNode.querySelectorAll('input')).forEach((value, index) => {
+						let check = thisE.parentNode.querySelectorAll('input')[index];
+						if (check)
+							check.checked = false;
+					})
+					thisE.previousElementSibling.checked = true
+					setOrderType(thisE.previousElementSibling.value)
+				}
+				function setOrderType(statusOrderId) {
+					let data = dataOrderAll.filter((value, index) => value.order.status_order_id == statusOrderId || statusOrderId == 0)
+					let htmls = data.map((value, index) => `
+						<tr class="text-center">
+							<td>${++index}</td>
+							<td class="image-prod"><div class="img" style="background-image:url(${value.image});"></div></td>
+
+							<td class="product-name">
+								<h3>${value.product.name}</h3>
+								<p class="Flavor">${value.flavor}</p>
+								<p class="size">${value.size}</p>
+							</td>
+
+
+							<td class="quantity">${value.cart.quantity}</td>
+
+							<td class="total">${(value.cart.total).toFixed(3)}đ</td>
+							<td>
+								<a href="/order/cancel/${value.order.id}" class="btn btn-danger" title="Huỷ đơn hàng"><i class="fa-solid fa-xmark"></i></a>
+							</td>
+						</tr>
+
+						<!------------------------------------------------------------ END TR --------------------------------------------->
+					`)
+					if (htmls.length == 0) {
+						htmls.push(`
+							<tr class="text-center">
+									<td>Không có sản phẩm trong giỏ hàng. </td>
+								</tr>
+						`)
+					}
+					const products = document.getElementById('products')
+					products.innerHTML = htmls.join('')
+				}
+			</script>
+		</div>
+		<div class="row">
+			<div class="col-md-12 ftco-animate">
+				<div class="cart-list">
+					<table class="table">
+						<thead class="thead-primary">
+							<tr class="text-center">
+								<th>#</th>
+								<th>&nbsp;</th>
+								<th>Tên sản phẩm</th>
+								<th>Số lượng</th>
+								<th>Tổng</th>
+								<th>Chức năng</th>
+							</tr>
+						</thead>
+						<tbody id="products">
+							@if (Model.Count == 0)
+							{
+								<tr class="text-center">
+									<td>Không có sản phẩm trong giỏ hàng. </td>
+								</tr>
+							}
+							else
+							{
+								var index = 1;
+								@foreach (var item in Model)
+								{
+									<tr class="text-center">
+										<td>@(index++)</td>
+										<td class="image-prod"><div class="img" style="background-image:url(@item.image);"></div></td>
+
+										<td class="product-name">
+											<h3>@item.product.name</h3>
+											<p class="Flavor">@item.flavor</p>
+											<p class="size">@item.size</p>
+										</td>
+
+
+										<td class="quantity">@item.cart.quantity</td>
+
+										<td class="total">@(item.cart.total)đ</td>
+										<td>
+											<a asp-controller="order" asp-action="cancel" asp-route-id="@item.order.id" class="btn btn-danger" title="Huỷ đơn hàng"><i class="fa-solid fa-xmark"></i></a>
+										</td>
+									</tr>
+
+									<!------------------------------------------------------------ END TR --------------------------------------------->
+								}
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

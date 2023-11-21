@@ -3,12 +3,17 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
+using QuenchYourThirst.Utilities;
+using System.Globalization;
 
 namespace QuenchYourThirst.Models
 {
     [Table("products")]
     public class Product
     {
+        public Product() {
+			created_at = DateTime.ParseExact(Functions.getCurrentDate(), "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+		}
         [Key]
         public long id { get; set; }
         [ForeignKey("StatusProduct")]

@@ -14,8 +14,8 @@ namespace QuenchYourThirst.Components
         {
             _context = context;
         }
-        public async Task<IViewComponentResult> InvokeAsync()       
-            {
+        public async Task<IViewComponentResult> InvokeAsync()
+        {
 
             var listofMenu = (from m in _context.Menus
                               where(m.isActive ==  true) && (m.position==1)

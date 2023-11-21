@@ -148,8 +148,7 @@ var paymentMethods = ViewBag.PaymentMethods;
 			axios.post(window.location.href + '/create', data)
 				.then(response => response.data)
 				.then(data => {
-					console.log(data)
-					//  window.location.href = window.location.origin + data.next_page
+					window.location.href = window.location.origin + data.next_page
 				})
 				.catch(err => {
 					const elementError = document.getElementById("message-all")

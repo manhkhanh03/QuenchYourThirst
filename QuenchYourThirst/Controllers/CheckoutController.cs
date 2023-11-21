@@ -25,7 +25,7 @@ namespace QuenchYourThirst.Controllers
 					var orderCart = new OrderCart
 					{
 						cart_id = cart,
-						order_id = order_id
+						order_id = order_id,
 					};
 					_context.OrderCarts.Add(orderCart);
 					_context.SaveChanges();
@@ -46,6 +46,7 @@ namespace QuenchYourThirst.Controllers
 				{
                     var cart = _context.Carts.Find(Functions._Cart_id[i]);
                     cart.quantity = (int)Functions._QuantityCart[i];
+                    cart.status_cart_id = 2;
                     _context.SaveChanges();
 				}
                 return true;
@@ -69,7 +70,7 @@ namespace QuenchYourThirst.Controllers
 					Functions._Message = "Đặt hàng thành công!";
                     return Ok(new
                     {
-                        next_page = "/",
+                        next_page = "/order",
                     });
                 }
                 return BadRequest(new

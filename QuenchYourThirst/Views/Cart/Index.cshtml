@@ -134,6 +134,7 @@
 										.then(data => {
 											addElement(data.message, newElement, cart, "alert-success", newButton)
 											deleteElement(thisElement)
+											window.location.reload();
 										})
 										.catch(err => {
 											addElement(err.response.data.message, newElement, cart, "alert-danger", newButton)
@@ -284,7 +285,7 @@
 					<input type="hidden" name="discount" value="0">
 					<input type="hidden" name="delivery" value="0">
 					<input type="hidden" name="total" value="@(subTotal + delivery)">
-					<input type="hidden" name="quantity" value="@(quantity)">
+					<input type="hidden" name="quantity" value="@(strArrQuantity)">
 					<input type="hidden" name="cart_id" value="@(strArr)">
 					
 					<button class="btn btn-primary py-3 px-4" style="color: #fff !important;">Thanh toán</button>

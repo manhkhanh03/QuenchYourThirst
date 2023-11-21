@@ -4,8 +4,7 @@
 @{
 	int totalCart = ViewData["Total"] != null ? int.Parse(ViewData["Total"].ToString()) : 0;
 }
-
-<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light navbar-bootsnipp" id="ftco-navbar">
 	<div class="container">
 		<a class="navbar-brand" href="index.html">QYThirst</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +37,14 @@
 					{
 						if (menu.menuName == "user")
 						{
+							@* <li class="nav-item">
+								<div class="input-group rounded">
+									<input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+									<span class="input-group-text border-0" id="search-addon">
+										<i class="fas fa-search"></i>
+									</span>
+								</div>
+							</li> *@
 							<li class="nav-item dropdown">
 								<a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 									@if (Functions.isLogin())
@@ -95,5 +102,5 @@
 				</ul>
 		</div>
 	</div>
+	
 </nav>
-

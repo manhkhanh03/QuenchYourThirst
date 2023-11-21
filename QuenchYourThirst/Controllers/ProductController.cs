@@ -13,7 +13,7 @@ namespace QuenchYourThirst.Controllers
 		}
 
 		[HttpGet]
-		[Route("/product/{product_name}/{id}")]
+		[Route("product/{product_name}/{id}")]
 		public IActionResult Index([FromQuery] Dictionary<string, string> request, long id)
 		{
 

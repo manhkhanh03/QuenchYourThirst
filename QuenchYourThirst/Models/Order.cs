@@ -21,6 +21,7 @@ namespace QuenchYourThirst.Models
         [ForeignKey("PaymentMethod")]
         public long payment_method_id { get; set; }
         public long payment_status_id { get; set; }
-        public DateTime created_at { get; set; }
+        public long status_order_id {  get; set; }
+        public DateTime? created_at { get; set; }
     }
 }
