@@ -12,7 +12,9 @@ namespace QuenchYourThirst.Areas.Admin.Models
         public AdminUser()
         {
             created_at = DateTime.ParseExact(Functions.getCurrentDate(), "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
-        }
+            img_user = "https://i.pinimg.com/originals/ab/9f/bd/ab9fbdb07378d68225a08a368d40df6e.png";
+
+		}
         [Key]
         public long id { get; set; }
         public string login_name { get; set; }

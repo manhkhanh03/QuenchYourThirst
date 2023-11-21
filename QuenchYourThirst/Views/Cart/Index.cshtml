@@ -1,10 +1,36 @@
-﻿
-
+﻿@* @using QuenchYourThirst.Models;
+@model IList<Cart>; *@
+@using QuenchYourThirst.Utilities;
+@{
+	decimal subTotal = 0;
+	decimal total = 0;
+	decimal delivery = 0;
+	// int quantity = 0;
+	// List<long> cart_id = new List<long>();
+	long[] cart_id = {};
+	long[] quantity = {};
+	string strArr = "";
+	string strArrQuantity = "";
+}
 <style>
 	.ftco-animate {
 		display: block;
 	}
+
+	.product-name p {
+		margin: 0;
+		font-size: 13px;
+	}
 </style>
+
+<script>
+	console.log(@Html.Raw(Json.Serialize(Model)))
+	const arrTotalElement = []
+	const arrQuantity = []
+</script>
+<script src = "https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js" integrity = "sha512-WrdC3CE9vf1nBf58JHepuWT4x24uTacky9fuzw2g/3L9JkihgwZ6Cfv+JGTtNyosOhEmttMtEZ6H3qJWfI7gIQ==" crossorigin = "anonymous" referrerpolicy = "no-referrer" ></script>
+<script src="~/js/validate.js"></script>
+<link rel="stylesheet" href="~/css/validate.css" />
 <section class="ftco-section ftco-cart">
 	<div class="container">
 		<div class="row">
@@ -15,54 +41,121 @@
 							<tr class="text-center">
 								<th>&nbsp;</th>
 								<th>&nbsp;</th>
-								<th>Product name</th>
-								<th>Price</th>
-								<th>Quantity</th>
-								<th>Total</th>
+								<th>Tên sản phẩm</th>
+								<th>Giá</th>
+								<th>Số lượng</th>
+								<th>Tổng</th>
 							</tr>
 						</thead>
-						<tbody>
-							<tr class="text-center">
-								<td class="product-remove"><a href="#"><span class="ion-ios-close"></span></a></td>
+						<tbody id="products">
+							@if (Model.Count == 0)
+							{
+								<tr class="text-center">
+									<td>Không có sản phẩm trong giỏ hàng. </td>
+								</tr>
+							}else
+							{
+								var index = 0;
+								@foreach (var c in Model)
+								{
+									@* cart_id.Add(c.cart.id); *@
+									Array.Resize(ref cart_id, cart_id.Length + 1);
+									cart_id[cart_id.Length - 1] = c.cart.id;
+									Array.Resize(ref quantity, quantity.Length + 1);
+									quantity[quantity.Length - 1] = c.cart.quantity;
+									subTotal += c.cart.total;
+									<tr class="text-center">
+										<td class="product-remove"><a onclick="deleteCart(@c.cart.id, this)" href="javascript:void(0)"><span class="ion-ios-close"></span></a></td>
 
-								<td class="image-prod"><div class="img" style="background-image:url(images/product-3.jpg);"></div></td>
+										<td class="image-prod"><div class="img" style="background-image:url(@c.image);"></div></td>
 
-								<td class="product-name">
-									<h3>Bell Pepper</h3>
-									<p>Far far away, behind the word mountains, far from the countries</p>
-								</td>
+										<td class="product-name">
+											<h3>@c.product.name</h3>
+											<p class="Flavor">@c.flavor</p>
+											<p class="size">@c.size</p>
+										</td>
 
-								<td class="price">$4.90</td>
+										<td class="price">@(c.cart.price)đ</td>
 
-								<td class="quantity">
-									<div class="input-group mb-3">
-										<input type="text" name="quantity" class="quantity form-control input-number" value="1" min="1" max="100">
-									</div>
-								</td>
+										<td class="quantity">
+											<div class="input-group mb-3">
+												<input type="number" maxlength="20" index="@(index++)" oninput="change(@c.cart.price, this)" name="quantity" class="quantity form-control input-number" value="@c.cart.quantity" min="1" max="20">
+											</div>
+										</td>
 
-								<td class="total">$4.90</td>
-							</tr><!-- END TR-->
+										<td class="total">@(c.cart.total)đ</td>
+										<script>
+											arrTotalElement.push(@Html.Raw(Json.Serialize(@c.cart.total)))
+											arrQuantity.push(@Html.Raw(Json.Serialize(@c.cart.quantity)))
+										</script>
+									</tr>
+	
+									<!------------------------------------------------------------ END TR --------------------------------------------->
+								}
+								strArr = string.Join(",", cart_id);
+								strArrQuantity = string.Join(",", quantity);
+							}
+							<script>
+								let lastValue = 0;
+								let lastTotal = 0;
+								function change(price, thisElement) {
+									if (thisElement.value >= 20) thisElement.value = lastValue
+									if (thisElement.value <= 0) thisElement.value = 0
+									const totalElement = thisElement.parentNode.parentNode.parentNode.querySelector('.total')
+									let total = parseFloat(thisElement.value) * parseFloat(price)
+									
+									totalElement.innerText = total.toFixed(3).toString() + 'đ'
+									lastValue = thisElement.value
+									lastTotal = total;
+									setCartTotal(total, thisElement.value, parseFloat(price), thisElement.getAttribute('index'))
+								}
 
-							<tr class="text-center">
-								<td class="product-remove"><a href="#"><span class="ion-ios-close"></span></a></td>
+								function deleteCart (id, thisElement) {
+									const cart = document.getElementById('alert')
+									const newElement = document.createElement("div")
+									const newButton = document.createElement("button")
 
-								<td class="image-prod"><div class="img" style="background-image:url(images/product-4.jpg);"></div></td>
+									newElement.classList.add("alert", 'alert-dismissible');
+									newElement.setAttribute("role", "alert")
+									newElement.style.animation = "scrollTop .60s linear"
 
-								<td class="product-name">
-									<h3>Bell Pepper</h3>
-									<p>Far far away, behind the word mountains, far from the countries</p>
-								</td>
+									newButton.classList.add("btn-close")
+									newButton.setAttribute("data-bs-dismiss", "alert")
+									newButton.setAttribute("aria-label", "Close")
 
-								<td class="price">$15.70</td>
+									const deleteElement = function (thisElement) {
+										const parent = thisElement.parentNode.parentNode.parentNode
+										const _dElement = thisElement.parentNode.parentNode
+										parent.removeChild(_dElement)
+									}
 
-								<td class="quantity">
-									<div class="input-group mb-3">
-										<input type="text" name="quantity" class="quantity form-control input-number" value="1" min="1" max="100">
-									</div>
-								</td>
+									axios.post(window.location.href + `/delete/${id}`, {})
+										.then(response => response.data)
+										.then(data => {
+											addElement(data.message, newElement, cart, "alert-success", newButton)
+											deleteElement(thisElement)
+										})
+										.catch(err => {
+											addElement(err.response.data.message, newElement, cart, "alert-danger", newButton)
+										})
+									
+								}
 
-								<td class="total">$15.70</td>
-							</tr><!-- END TR-->
+								function addElement(message, newElement, parent, _Class, newButton) {
+									newElement.classList.add(_Class);
+									newElement.innerText = message
+									newElement.appendChild(newButton)
+
+									parent.firstElementChild.appendChild(newElement)
+
+									setTimeout(() => {
+										newElement.style.animation = "scrollTopRemove .60s linear"
+										setTimeout(() => {
+											parent.firstElementChild.removeChild(newElement)
+										}, 600);
+									}, 3000);
+								}
+							</script>
 						</tbody>
 					</table>
 				</div>
@@ -84,48 +177,160 @@
 			</div>
 			<div class="col-lg-4 mt-5 cart-wrap ftco-animate">
 				<div class="cart-total mb-3">
-					<h3>Estimate shipping and tax</h3>
-					<p>Enter your destination to get a shipping estimate</p>
-					<form action="#" class="info">
+					<h3>Liên hệ</h3>
+					<form action="post" class="info" id="formInfo">
 						<div class="form-group">
-							<label for="">Country</label>
-							<input type="text" class="form-control text-left px-3" placeholder="">
+							<label for="">Tên  người nhận</label>
+							<input type="text" class="form-control text-left px-3" value="@Functions._LoginName" disabled >
+							<p class="form-message"></p>
 						</div>
 						<div class="form-group">
-							<label for="country">State/Province</label>
-							<input type="text" class="form-control text-left px-3" placeholder="">
+							<label for="">Địa chỉ</label>
+							<input type="text" class="form-control text-left px-3" id="address" name="address" value="@Functions._Address" placeholder="">
+							<p class="form-message"></p>
 						</div>
 						<div class="form-group">
-							<label for="country">Zip/Postal Code</label>
-							<input type="text" class="form-control text-left px-3" placeholder="">
+							<label for="country">Số điện thoại</label>
+							<input id="phone" type="text" class="form-control text-left px-3" name="phone" value="@Functions._Phone" placeholder="" readonly>
+							<p class="form-message"></p>
 						</div>
+						<button type="submit" class="btn btn-primary py-3 px-4" style="color: #fff !important">Xác nhận thông tin liên hệ</button>
 					</form>
 				</div>
-				<p><a href="checkout.html" class="btn btn-primary py-3 px-4">Estimate</a></p>
+				<!-- Thêm handleImport ở đây rồi kiểm tra -->
+				<script>
+					handleImport({
+						form: '#formInfo',
+						formInput: '.form-control',
+						formMessage: '.form-message',
+						rules: [
+							handleImport.isFocus('#address', 'Vui lòng nhập địa chỉ nhận hàng'),
+						],
+						isSuccess: function () {
+							const newData = {}
+							$("#formInfo").serializeArray().forEach(function (value) {
+								newData[value.name] = value.value
+							})
+							const cart = document.getElementById('alert')
+							const newElement = document.createElement("div")
+							const newButton = document.createElement("button")
+
+							newElement.classList.add("alert", 'alert-dismissible');
+							newElement.setAttribute("role", "alert")
+							newElement.style.animation = "scrollTop .60s linear"
+
+							newButton.classList.add("btn-close")
+							newButton.setAttribute("data-bs-dismiss", "alert")
+							newButton.setAttribute("aria-label", "Close")
+
+							axios.post(window.location.href + '/contact', newData)
+								.then(response => response.data)
+								.then(data => {
+									console.log(data)
+									addElement(data.message, newElement, cart, "alert-success", newButton)
+								})
+								.catch(err => {
+									addElement(err.response.data.message, newElement, cart, "alert-danger", newButton)
+									var errElement = form.querySelector(err.response.data.err)
+									errElement.nextElementSibling.innerText = err.response.data.message
+								})
+						}
+					})
+
+					function addElement(message, newElement, parent, _Class, newButton) {
+						newElement.classList.add(_Class);
+						newElement.innerText = message
+						newElement.appendChild(newButton)
+
+						parent.firstElementChild.appendChild(newElement)
+
+						setTimeout(() => {
+							newElement.style.animation = "scrollTopRemove .60s linear"
+							setTimeout(() => {
+								parent.firstElementChild.removeChild(newElement)
+							}, 600);
+						}, 3000);
+					}
+				</script>
+				@* <p><a href="checkout.html" class="btn btn-primary py-3 px-4">Estimate</a></p> *@
 			</div>
 			<div class="col-lg-4 mt-5 cart-wrap ftco-animate">
+				<script>
+					let test = 0
+				</script>
 				<div class="cart-total mb-3">
 					<h3>Cart Totals</h3>
 					<p class="d-flex">
 						<span>Subtotal</span>
-						<span>$20.60</span>
+						<span id="subtotal" style="width: auto;">@(subTotal)</span><span>đ</span>
 					</p>
 					<p class="d-flex">
 						<span>Delivery</span>
-						<span>$0.00</span>
+						<span>@(delivery)đ</span>
 					</p>
 					<p class="d-flex">
 						<span>Discount</span>
-						<span>$3.00</span>
+						<span>0đ</span>
 					</p>
 					<hr>
 					<p class="d-flex total-price">
 						<span>Total</span>
-						<span>$17.60</span>
+						<span id="total" style="width: auto;">@(delivery + subTotal)</span><span style="color: gray;">đ</span>
 					</p>
 				</div>
-				<p><a href="checkout.html" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
+				
+				<form method="post" asp-action="checkout" id="cart-total">
+					<input type="hidden" name="subtotal" value="@(subTotal)">
+					<input type="hidden" name="discount" value="0">
+					<input type="hidden" name="delivery" value="0">
+					<input type="hidden" name="total" value="@(subTotal + delivery)">
+					<input type="hidden" name="quantity" value="@(quantity)">
+					<input type="hidden" name="cart_id" value="@(strArr)">
+					
+					<button class="btn btn-primary py-3 px-4" style="color: #fff !important;">Thanh toán</button>
+				</form>
 			</div>
 		</div>
 	</div>
 </section>
+<script>
+	const cartTotal = {
+		subtotal: 0,
+		delivary: 0,
+		discount: 0,
+		total: 0
+	}
+	function setCartTotal(total, quantity, price, index) {
+		function updateElement(index, quantity, price) {
+			arrTotalElement[index] = parseInt(quantity) * price;
+			arrQuantity[index] = parseInt(quantity);
+		}
+		updateElement(index, quantity, price)
+
+		// Hàm để tính toán tổng giá trị của tất cả các phần tử
+		function calculateTotal() {
+			var total = 0;
+			let quantity = 0;
+			for (var i = 0; i < arrTotalElement.length; i++) {
+				total += arrTotalElement[i];
+				quantity += arrQuantity[i]
+			}
+			return {
+				total: total,
+				quantity: quantity
+			};
+		}
+		console.log(arrQuantity)
+		const subTotalElement = document.getElementById('subtotal')
+		const totalElement = document.getElementById('total')
+		const formElement = document.getElementById('cart-total')
+		// let subTotal = parseFloat(subTotalElement.innerText) - (parseFloat(total) - price) + (parseFloat(total))
+
+		var calculate = calculateTotal()
+		subTotalElement.innerText = calculate.total.toFixed(3).toString()
+		totalElement.innerText = calculate.total.toFixed(3).toString()
+		formElement.querySelector('input[name=subtotal]').value = calculate.total.toFixed(3).toString()
+		formElement.querySelector('input[name=total]').value = calculate.total.toFixed(3).toString()
+		formElement.querySelector('input[name=quantity]').value = arrQuantity.toString()
+	}
+</script>

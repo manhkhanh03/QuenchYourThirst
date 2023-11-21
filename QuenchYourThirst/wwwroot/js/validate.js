@@ -113,3 +113,12 @@ handleImport.isChange = function (selector, message) {
         },
     };
 };
+
+handleImport.isQuantity = function (selector, message) {
+    return {
+        selector: selector,
+        test: function (value) {
+            return value > 0 && value <= 20 ? undefined : message;
+        }
+    }
+}

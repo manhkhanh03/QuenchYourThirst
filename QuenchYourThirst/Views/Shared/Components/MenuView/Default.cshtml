@@ -7,7 +7,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
 	<div class="container">
-		<a class="navbar-brand" href="index.html">Vegefoods</a>
+		<a class="navbar-brand" href="index.html">QYThirst</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="oi oi-menu"></span> Menu
 		</button>
@@ -17,6 +17,7 @@
 				{
 					var id = menu.id;
 					var Smenu = Model.Where(p => p.parentId == id).OrderBy(p => p.menuOrder).ToList();
+					var Pmenu = Model.Where(m => m.parentId == 0 && m.id == menu.id).FirstOrDefault();
 					var url = Functions.changeStringToString(menu.menuName);
 					@if (!string.IsNullOrEmpty(menu.link)) url = menu.link;
 
@@ -29,7 +30,7 @@
 							</a>
 						</li>
 					}
-					else if (Smenu.Count == 0)
+					else if (Smenu.Count == 0 && Pmenu != null)
 					{
 						<li class="nav-item"><a href="/@url" class="nav-link">@menu.menuName</a></li>
 					}
@@ -57,10 +58,16 @@
 										{
 											var url1 = Functions.changeStringToString(smn.menuName);
 											@if (!string.IsNullOrEmpty(smn.link)) url1 = smn.link;
+											@if ((smn.link).Trim() == "admin")
+											{
+												if(Functions.isAdmin())
+												{
+													<a href="/@url1" class="dropdown-item">@smn.menuName</a>
+												}
+												continue;
+											}
 											<a href="/@url1" class="dropdown-item">@smn.menuName</a>
 										}
-										@*  <a href="/" class="dropdown-item">Đăng xuất</a>
-										 <a href="/home/logout" class="dropdown-item">Đăng xuất</a> *@
 									}
 									else
 									{
@@ -69,18 +76,20 @@
 								</div>
 							</li>
 							continue;
+						}else if (Smenu.Count != 0)
+						{
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@menu.menuName</a>
+								<div class="dropdown-menu" aria-labelledby="dropdown04">
+									@foreach (var smn in Smenu)
+									{
+										var url1 = Functions.changeStringToString(smn.menuName);
+										@if (!string.IsNullOrEmpty(smn.link)) url1 = smn.link;
+										<a href="/@url1" class="dropdown-item">@smn.menuName</a>
+									}
+								</div>
+							</li>
 						}
-						<li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@menu.menuName</a>
-							<div class="dropdown-menu" aria-labelledby="dropdown04">
-								@foreach (var smn in Smenu)
-								{
-									var url1 = Functions.changeStringToString(smn.menuName);
-									@if (!string.IsNullOrEmpty(smn.link)) url1 = smn.link;
-									<a href="/@url1" class="dropdown-item">@smn.menuName</a>
-								}
-							</div>
-						</li>
 					}
 				}
 				</ul>
