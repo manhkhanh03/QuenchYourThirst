@@ -20,7 +20,7 @@ namespace QuenchYourThirst.Models
         public long status_product_id { get; set; }
         [ForeignKey("ProductCategory")]
         public long product_category_id { get; set; }
-        public string name { get; set; }
+        public string? name { get; set; }
         public string? description {  get; set; }
         public long quantity { get; set; }
         public DateTime? created_at { get; set; }
