@@ -25,6 +25,7 @@ namespace QuenchYourThirst.Models
 		public DbSet<Role> Roles { get; set; }
 		public DbSet<AdminUser> AdminUsers { get; set; }
 		public DbSet<Category> Categorys { get; set; }
+        public DbSet<Category1> Category1 { get; set; }
 		public DbSet<Deal_of_the_day> Deal_of_the_days { get; set; }
 		public DbSet<Poster> Posters { get; set; }
 		public DbSet<Services> Services { get; set; }
@@ -81,6 +82,8 @@ namespace QuenchYourThirst.Models
             //    .HasForeignKey(pci => pci.product_category_id);
         }
         public DbSet<Menu> Menus { get; set; }
+        public DbSet<footer> footer { get; set; }
+        public DbSet<Our_products> Our_products { get; set;}
       
     }
 }

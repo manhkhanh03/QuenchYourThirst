@@ -7,10 +7,8 @@ namespace QuenchYourThirst.Models
     public class Category
     {
         [Key]
-        public int ID { get; set; }
-        public string? MenuName { get; set; }
-        public string? Content { get; set; }
+        public string?Name { get; set; }
+       
         public string? Title { get; set; }
-        public string? Images { get; set; }
     }
 }
