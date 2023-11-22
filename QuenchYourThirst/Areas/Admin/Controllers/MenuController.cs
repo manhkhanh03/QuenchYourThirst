@@ -21,12 +21,12 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
             return View(menus);
         }
 
-        public IActionResult Create() 
-        {
-			if (!Functions.isLogin()) return RedirectToAction("create", "login", new { area = "" });
+        public IActionResult Create()
+		{
+			if (!Functions.isLogin()) return RedirectToAction("index", "login", new { area = "" });
 
-			ViewBag.Menus = Menus();
-			ViewData["actionName"] = "create";
+            ViewBag.Menus = Menus();
+            ViewData["actionName"] = "create";
             ViewData["controllerName"] = "menu";
             return View();
         }
@@ -39,6 +39,7 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
             {
                 _context.Menus.Add(menu);
                 _context.SaveChanges();
+                Functions._Message = "Thêm menu thành công!";
                 return Redirect("index");
             }
             return BadRequest(menu);
@@ -60,9 +61,9 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
 
         public IActionResult Edit(long id)
         {
-			if (!Functions.isLogin()) return RedirectToAction("edit", "login", new { area = "" });
+            if (!Functions.isLogin()) return RedirectToAction("index", "login", new { area = "" });
 
-			var menu = _context.Menus.FirstOrDefault(m => m.id == id);
+            var menu = _context.Menus.FirstOrDefault(m => m.id == id);
             if (menu == null || id == 0 || id == null) { return Redirect("/not-found"); }
 
             ViewData["actionName"] = "edit";
@@ -79,15 +80,16 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
             {
                 _context.Menus.Update(mn);
                 _context.SaveChanges();
-                return Redirect("index");
+                Functions._Message = "Sửa menu thành công!";
+                return RedirectToAction("index", "menu");
             }
             return BadRequest(mn);
         }
 
         [HttpGet]
         public IActionResult Delete(long? id = 0)
-        {
-			if (!Functions.isLogin()) return RedirectToAction("delete", "login", new { area = "" });
+		{
+			if (!Functions.isLogin()) return RedirectToAction("index", "login", new { area = "" });
 
 			var menu = _context.Menus.Find((int)id);
 			if (menu == null) { return Redirect("/not-found"); }
@@ -103,6 +105,7 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
             if (menu == null) { return BadRequest(menu); }
             _context.Menus.Remove(menu);
             _context.SaveChanges();
+            Functions._Message = "Xoá menu thành công!";
             return Redirect("/admin/menu/index");
         }
     }

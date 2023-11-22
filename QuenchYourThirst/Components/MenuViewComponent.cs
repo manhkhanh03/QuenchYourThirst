@@ -20,7 +20,7 @@ namespace QuenchYourThirst.Components
             var listofMenu = (from m in _context.Menus
                               where(m.isActive ==  true) && (m.position==1)
                               select m).ToList();
-             ViewData["Total"] = _context.Carts.Where(c => c.customer_id == Functions._Id).Count();
+             ViewData["Total"] = _context.Carts.Where(c => c.customer_id == Functions._Id && c.status_cart_id == 1).Count();
             return await Task.FromResult((IViewComponentResult)View ("Default", listofMenu));
         }
     }

@@ -18,6 +18,16 @@ namespace QuenchYourThirst.Utilities
         public static string _Message = String.Empty;
 		public static string _ErrorMessage = String.Empty;
 
+		public static string _AddressCart = String.Empty;
+		public static string _PhoneCart = String.Empty;
+        public static decimal _SubTotal = 0;
+        public static decimal _Delivery = 0;
+        public static decimal _Total = 0;
+        public static decimal _Discount = 0;
+        public static long[] _QuantityCart;
+        public static long[] _Cart_id;
+
+
 		public static string changeStringToString(string name)
         {
             return SlugGenerator.SlugGenerator.GenerateSlug(name);
@@ -60,6 +70,12 @@ namespace QuenchYourThirst.Utilities
         public static string getCurrentDate()
         {
             return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        }
+
+        public static bool isAdmin()
+        {
+            if (_RoleId == 2) return true;
+            return false;
         }
     }
 }

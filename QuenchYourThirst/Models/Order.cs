@@ -5,24 +5,22 @@ using System.Globalization;
 
 namespace QuenchYourThirst.Models
 {
-    [Table("Cart")]
-    public class Cart
+    [Table("order")]
+    public class Order
     {
-        public Cart()
-        {
+        public Order() { 
             created_at = DateTime.ParseExact(Functions.getCurrentDate(), "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
-            status_cart_id = 1;
         }
         [Key]
         public long id { get; set; }
-        [ForeignKey("ProductSizeFlavor")]
-        public long product_size_flavor_id { get; set; }
-        [ForeignKey("User")]
         public long customer_id { get; set; }
-        public long status_cart_id { get; set; }
+        //public long product_size_flavor_id { get; set; }
+        public string shipping_address {  get; set; }
         public int quantity { get; set; }
-        public decimal price { get; set; }
-        public decimal total { get; set; }
-		public DateTime? created_at { get; set; }
+        public decimal total {  get; set; }
+        [ForeignKey("PaymentMethod")]
+        public long payment_method_id { get; set; }
+        public long payment_status_id { get; set; }
+        public DateTime created_at { get; set; }
     }
 }

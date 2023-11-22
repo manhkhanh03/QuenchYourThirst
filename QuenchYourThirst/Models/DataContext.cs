@@ -30,6 +30,9 @@ namespace QuenchYourThirst.Models
 		public DbSet<Poster> Posters { get; set; }
 		public DbSet<Services> Services { get; set; }
 		public DbSet<Testimony> Testimonys { get; set; }
+		public DbSet<Order> Orders { get; set; }
+		public DbSet<PaymentMethod> PaymentMethods { get; set; }
+		public DbSet<OrderCart> OrderCarts { get; set; }
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>(entity =>

@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using QuenchYourThirst.Utilities;
+
+<!DOCTYPE html>
 
 <!-- =========================================================
 * Sneat - Bootstrap 5 HTML Admin Template - Pro | v1.0.0
@@ -64,6 +66,103 @@
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="~/admin/assets/js/config.js"></script>
+    <style>
+        .cart {
+            position: fixed;
+            right: 0;
+            top: 98px;
+            z-index: 10000;
+        }
+
+        @@keyframes scrollTop {
+            0% {
+                bottom: -200px;
+                opacity: 0;
+            }
+
+            10% {
+                bottom: -180px;
+                opacity: 0.1;
+            }
+
+            20% {
+                bottom: -160px;
+                opacity: 0.2;
+            }
+
+            30% {
+                bottom: -140px;
+                opacity: 0.3;
+            }
+
+            40% {
+                bottom: -120px;
+                opacity: 0.4;
+            }
+
+            50% {
+                bottom: -100px;
+                opacity: 0.5;
+            }
+
+            60% {
+                bottom: -80px;
+                opacity: 0.6;
+            }
+
+            70% {
+                bottom: -60px;
+                opacity: 0.7;
+            }
+
+            80% {
+                bottom: -40px;
+                opacity: 0.8;
+            }
+
+            90% {
+                bottom: -20px;
+                opacity: 0.9;
+            }
+
+            100% {
+                bottom: 0;
+                opacity: 1;
+            }
+        }
+
+        @@keyframes scrollTopRemove {
+            0% {
+                bottom: 0;
+                opacity: 1;
+            }
+
+            20% {
+                bottom: 20px;
+                opacity: 0.8;
+            }
+
+            40% {
+                bottom: 40px;
+                opacity: 0.6;
+            }
+
+            60% {
+                bottom: 60px;
+                opacity: 0.4;
+            }
+
+            80% {
+                bottom: 80px;
+                opacity: 0.2;
+            }
+
+            100% {
+                bottom: 100px;
+                opacity: 0;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -114,10 +213,10 @@
                             <li class="nav-item navbar-dropdown dropdown-user dropdown">
                                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                                     <div class="avatar avatar-online">
-                                        <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                                        <img src="@Functions._Image" alt class="w-px-40 h-auto rounded-circle" />
                                     </div>
                                 </a>
-                                <ul class="dropdown-menu dropdown-menu-end">
+                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
                                         <a class="dropdown-item" href="#">
                                             <div class="d-flex">
@@ -179,6 +278,39 @@
         <!-- Overlay -->
         <div class="layout-overlay layout-menu-toggle"></div>
     </div>
+    <!-- / Alert -->
+    <div class="cart" id="alert">
+        <div class="card-body">
+            @if (!string.IsNullOrEmpty(Functions._Message))
+            {
+                <div class="alert alert-success alert-dismissible" role="alert" style="color: #71dd37 !important; animation: scrollTop 1.25s linear;">
+                    @Functions._Message
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                Functions._Message = "";
+            }
+            else if (!string.IsNullOrEmpty(Functions._ErrorMessage))
+            {
+                <div class="alert alert-danger alert-dismissible" role="alert" style="color: #ff3e1d !important; animation: scrollTop 1.25s linear;">
+                    @Functions._ErrorMessage
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                Functions._ErrorMessage = "";
+            }
+            <script>
+                const _alert = document.querySelector('#alert')
+                if (_alert.firstElementChild.firstElementChild) {
+                    setTimeout(() => {
+                        _alert.firstElementChild.firstElementChild.style.animation = 'scrollTopRemove .60s linear'
+                        setTimeout(() => {
+                            _alert.firstElementChild.removeChild(_alert.firstElementChild.firstElementChild);
+                        }, 600)
+                    }, 3000);
+                }
+            </script>
+        </div>
+    </div>
+
     <!-- / Layout wrapper -->
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->

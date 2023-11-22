@@ -149,7 +149,7 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-			if (!Functions.isLogin()) return RedirectToAction("create", "login", new { area = "" });
+			if (!Functions.isLogin()) return RedirectToAction("index", "login", new { area = "" });
 
 			ViewBag.Categories = await PC();
             ViewBag.Status = await PS();
@@ -169,6 +169,7 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
             {
                 _context.Products.Add(product);
                 _context.SaveChanges();
+                Functions._Message = "Thêm sản phẩm thành công!";
                 return Ok(product);
             }
             return BadRequest(product);
@@ -177,7 +178,7 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(long id)
         {
-			if (!Functions.isLogin()) return RedirectToAction("edit", "login", new { area = "" });
+			if (!Functions.isLogin()) return RedirectToAction("index", "login", new { area = "" });
 
 			var product = _context.Products.Find(id);
             if (product == null || id == 0) return Redirect("/not-found");
@@ -200,6 +201,7 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
             {
                 _context.Products.Update(product);
                 _context.SaveChanges();
+                Functions._Message = "Sửa sản phẩm thành công!";
                 return Ok(product);
             }
             return BadRequest(product);
@@ -208,7 +210,7 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Delete(long? id)
         {
-			if (!Functions.isLogin()) return RedirectToAction("delete", "login", new { area = "" });
+			if (!Functions.isLogin()) return RedirectToAction("index", "login", new { area = "" });
 
 			var product = _context.Products.Find(id);
             if (product == null || id == 0) { return BadRequest("/not-found"); }
@@ -229,6 +231,7 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
             p.status_product_id = statusDeleteId;
             _context.Products.Update(p);
             _context.SaveChanges();
+            Functions._Message = "Xoá sản phẩm thành công!";
             return Redirect("/admin/product/index");
         }
     }

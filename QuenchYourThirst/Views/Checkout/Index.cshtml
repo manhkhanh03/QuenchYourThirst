@@ -1,0 +1,161 @@
+﻿@using QuenchYourThirst.Utilities;
+@{
+var paymentMethods = ViewBag.PaymentMethods;
+}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js" integrity="sha512-WrdC3CE9vf1nBf58JHepuWT4x24uTacky9fuzw2g/3L9JkihgwZ6Cfv+JGTtNyosOhEmttMtEZ6H3qJWfI7gIQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="~/js/validate.js"></script>
+<link rel="stylesheet" href="~/css/validate.css" />
+<section class="ftco-section">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-xl-7 ftco-animate fadeInUp ftco-animated">
+				<form action="#" class="billing-form" id="settingDetail">
+					<h3 class="mb-4 billing-heading">Billing Details</h3>
+					<div class="row align-items-end">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="login_name">Tên người đặt</label>
+								<input type="text" name="login_name" class="form-control" value="@Functions._LoginName" placeholder="" disabled>
+								<p class="form-message"></p>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="phone">Số điện thoại</label>
+								<input type="text" name="phone" value="@Functions._Phone" class="form-control" placeholder="" disabled>
+								<p class="form-message"></p>
+							</div>
+						</div>
+						<div class="w-100"></div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="shipping_address">Địa chỉ</label>
+								<input type="text" id="shipping_address" name="shipping_address" value="@Functions._AddressCart" class="form-control" readonly placeholder="..............">
+								<p class="form-message"></p>
+							</div>
+						</div>
+					</div>
+				</form><!-- END -->
+			</div>
+			<div class="col-xl-5">
+				<div class="row mt-5 pt-3">
+					<div class="col-md-12 d-flex mb-5">
+						<div class="cart-detail cart-total p-3 p-md-4">
+							<h3 class="billing-heading mb-4">Tổng tiền</h3>
+							<p class="d-flex">
+								<span>Tổng phụ</span>
+								<span>@(Functions._SubTotal)đ</span>
+							</p>
+							<p class="d-flex">
+								<span>Vận chuyển</span>
+								<span>@(Functions._Delivery)đ</span>
+							</p>
+							<p class="d-flex">
+								<span>Giảm giá</span>
+								<span>@(Functions._Discount)đ</span>
+							</p>
+							<hr>
+							<p class="d-flex total-price">
+								<span>Tổng</span>
+								<span>@(Functions._Total)đ</span>
+							</p>
+						</div>
+					</div>
+					<div class="col-md-12">
+						<div class="cart-detail p-3 p-md-4" id="payment-method">
+							<h3 class="billing-heading mb-4">Phương thức thanh toán</h3>
+							<!-- ...................... -->
+							@foreach(var pm in paymentMethods)
+							{
+							<div class="form-group">
+								<div class="col-md-12">
+									<div class="radio">
+										<label><input type="radio" data-value="@pm.id" name="optradio" class="mr-2"> @pm.name</label>
+									</div>
+								</div>
+							</div>
+							<!-- ...................... -->
+							}
+							<p onclick="submitCheckout()" class="btn btn-primary py-3 px-4">Đặt hàng</p>
+						</div>
+					</div>
+				</div>
+			</div> <!-- .col-md-8 -->
+		</div>
+	</div>
+</section>
+<script>
+	function checkPaymentMethod() {
+		const parent = document.getElementById("payment-method")
+		const input = parent.querySelectorAll("input")
+		let valuePaymentMethod = 0;
+		let isPaymenMethod = Array.from(input).some((ele, index, arr) => {
+			if (ele.checked) {
+				valuePaymentMethod = arr[index].getAttribute('data-value')
+				return true;
+			}
+
+			return false;
+		})
+
+		console.log(isPaymenMethod, valuePaymentMethod)
+		if (isPaymenMethod) return valuePaymentMethod
+		return false;
+	}
+
+	function addElement(message, newElement, parent, _Class, newButton) {
+		newElement.classList.add(_Class);
+		newElement.innerText = message
+		newElement.appendChild(newButton)
+
+		parent.firstElementChild.appendChild(newElement)
+
+		setTimeout(() => {
+			newElement.style.animation = "scrollTopRemove .60s linear"
+			setTimeout(() => {
+				parent.firstElementChild.removeChild(newElement)
+			}, 600);
+		}, 3000);
+	}
+
+	function submitCheckout() {
+		const paymentMethod = checkPaymentMethod()
+		const cart = document.getElementById('alert')
+		const newElement = document.createElement("div")
+		const newButton = document.createElement("button")
+
+		newElement.classList.add("alert", 'alert-dismissible');
+		newElement.setAttribute("role", "alert")
+		newElement.style.animation = "scrollTop .60s linear"
+
+		newButton.classList.add("btn-close")
+		newButton.setAttribute("data-bs-dismiss", "alert")
+		newButton.setAttribute("aria-label", "Close")
+		if (!paymentMethod) {
+			addElement("Vui lòng chọn phương thức thanh toán!", newElement, cart, "alert-warning", newButton)
+		}else {
+			let quantityCart = @Html.Raw(Json.Serialize(Functions._QuantityCart));
+			console.log(quantityCart.reduce((accumulator, currentValue) => accumulator + currentValue, 0))
+			const data = {
+				customer_id: @Html.Raw(Json.Serialize(Functions._Id)),
+				shipping_address: @Html.Raw(Json.Serialize(Functions._AddressCart)),
+				quantity: quantityCart.reduce((accumulator, currentValue) => accumulator + currentValue, 0),
+				total: @Html.Raw(Json.Serialize(Functions._Total)),
+				payment_method_id: paymentMethod,
+				payment_status_id: paymentMethod == 1 ? 1 : 2,
+			}
+
+			axios.post(window.location.href + '/create', data)
+				.then(response => response.data)
+				.then(data => {
+					console.log(data)
+					//  window.location.href = window.location.origin + data.next_page
+				})
+				.catch(err => {
+					const elementError = document.getElementById("message-all")
+					elementError.innerText = err.response.data.message
+					addElement(err.response.data.message, newElement, cart, "alert-danger", newButton)
+				})
+		}
+	}
+</script>

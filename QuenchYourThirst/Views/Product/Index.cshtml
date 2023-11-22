@@ -1,7 +1,13 @@
-﻿<script>
-	console.log(@Html.Raw(Json.Serialize(Model)))
+﻿@using QuenchYourThirst.Utilities;
+@model QuenchYourThirst.Models.Cart;
+@{
+var product = ViewBag.Product;
+var totalListPrice = product.psfs.Count;
+}
+<link rel="stylesheet" href="~/css/validate.css" />
+<script>
+	console.log(@Html.Raw(Json.Serialize(product)))
 </script>
-
 <style>
 	.col-lg-6.mb-5.ftco-animate.fadeInUp.ftco-animated {
 		max-height: 500px;
@@ -12,23 +18,29 @@
 		height: 100%;
 	}
 
-		a.image-popup img {
-			height: 80% !important;
-			width: 100% !important;
-			object-fit: cover;
-			object-position: center;
-		}
-
+	a.image-popup img {
+		height: 80% !important;
+		width: 100% !important;
+		object-fit: cover;
+		object-position: center;
+	}
+	.form-message {
+		left: 0;
+		right: -50px;
+	}
+	.col-md-6 {
+		margin-bottom: 20px;
+	}
 </style>
 
 <section class="ftco-section">
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-6 mb-5 ftco-animate">
-				<a href="@Model.imgs[0].url" class="image-popup"><img src="@Model.imgs[0].url" style="height:auto; width:auto" class="img-fluid" alt="Colorlib Template"></a>
+				<a href="@product.imgs[0].url" class="image-popup"><img src="@product.imgs[0].url" style="height:auto; width:auto" class="img-fluid" alt="Colorlib Template"></a>
 			</div>
 			<div class="col-lg-6 product-details pl-md-5 ftco-animate" style="display: block;">
-				<h3>@Model.product.name</h3>
+				<h3>@product.product.name</h3>
 				<div class="rating d-flex">
 					<p class="text-left mr-4">
 						<a href="#" class="mr-2">5.0</a>
@@ -45,65 +57,70 @@
 						<a href="#" class="mr-2" style="color: #000;">500 <span style="color: #bbb;">Sold</span></a>
 					</p>
 				</div>
-				@{
-					var totalListPrice = Model.psfs.Count;
-				}
 				<p class="price">
-					<span id="start-price">@Model.psfs[0].price đ</span>
+					<span id="start-price">@(product.psfs[0].price)đ</span>
 					@if ((int)totalListPrice != 0)
 					{
 						<span> - </span>
-						<span id="end-price">@Model.psfs[totalListPrice - 1].price đ</span>
+						<span id="end-price">@(product.psfs[totalListPrice - 1].price)đ</span>
 					}
 				</p>
-				<div class="row mt-4">
-					<div class="col-md-6">
-						<div class="form-group d-flex">
-							<div class="select-wrap">
-								<div class="icon"><span class="ion-ios-arrow-down"></span></div>
-								<select name="" id="" class="form-control">
-									@foreach (var item in Model.sizes)
-									{
+				<form action="post" id="formProduct">
+					<div class="row mt-4">
+						<div class="col-md-6">
+							<div class="form-group d-flex">
+								<div class="select-wrap">
+									<div class="icon"><span class="ion-ios-arrow-down"></span></div>
+									<select name="size" id="" class="form-control form-select">
+										@foreach (var item in product.sizes)
+										{
 										<option value="@item.id" size="@item.size">@item.name</option>
-									}
-								</select>
+										}
+									</select>
+									<p class="form-message"></p>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="w-100"></div>
-					<div class="col-md-6">
-						<div class="form-group d-flex">
-							<div class="select-wrap">
-								<div class="icon"><span class="ion-ios-arrow-down"></span></div>
-								<select name="" id="" class="form-control">
-									@foreach (var item in Model.flavors)
-									{
+						<div class="w-100"></div>
+						<div class="col-md-6">
+							<div class="form-group d-flex">
+								<div class="select-wrap">
+									<div class="icon"><span class="ion-ios-arrow-down"></span></div>
+									<select name="flavor" id="" class="form-control form-select">
+										@foreach (var item in product.flavors)
+										{
 										<option value="@item.id" type="@item.type_flavor_id">@item.name</option>
-									}
-								</select>
+										}
+									</select>
+									<p class="form-message"></p>
+								</div>
 							</div>
 						</div>
+						<div class="w-100"></div>
+						<div class="input-group col-md-6 d-flex mb-3">
+							<span class="input-group-btn mr-2">
+								<button type="button" class="quantity-left-minus btn" data-type="minus" data-field="">
+									<i class="ion-ios-remove"></i>
+								</button>
+							</span>
+							<input type="text" id="quantity" name="quantity" class="form-control input-number" value="1" min="1" max="100">
+							<p class="form-message" style="left: 16px;  bottom: -36px;"></p>
+							<span class="input-group-btn ml-2">
+								<button type="button" class="quantity-right-plus btn" data-type="plus" data-field="">
+									<i class="ion-ios-add"></i>
+								</button>
+							</span>
+						</div>
+						<div class="w-100"></div>
+						<div class="col-md-12">
+							<p style="color: #000;">@((product.product.quantity).ToString()) còn hàng</p>
+						</div>
 					</div>
-					<div class="w-100"></div>
-					<div class="input-group col-md-6 d-flex mb-3">
-						<span class="input-group-btn mr-2">
-							<button type="button" class="quantity-left-minus btn" data-type="minus" data-field="">
-								<i class="ion-ios-remove"></i>
-							</button>
-						</span>
-						<input type="text" id="quantity" name="quantity" class="form-control input-number" value="1" min="1" max="100">
-						<span class="input-group-btn ml-2">
-							<button type="button" class="quantity-right-plus btn" data-type="plus" data-field="">
-								<i class="ion-ios-add"></i>
-							</button>
-						</span>
-					</div>
-					<div class="w-100"></div>
-					<div class="col-md-12">
-						<p style="color: #000;">600 kg available</p>
-					</div>
-				</div>
-				<p><a href="cart.html" class="btn btn-black py-3 px-5">Add to Cart</a></p>
+					<input type="hidden" asp-for="customer_id" value="@Functions._Id">
+					<button type="submit" style="border: none !important;">
+						<span class="btn btn-black py-3 px-5">Add to Cart</span>
+					</button>
+				</form>
 			</div>
 		</div>
 	</div>
@@ -241,11 +258,13 @@
 		</div>
 	</div>
 </section>
+<script src="~/js/validate.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js" integrity="sha512-WrdC3CE9vf1nBf58JHepuWT4x24uTacky9fuzw2g/3L9JkihgwZ6Cfv+JGTtNyosOhEmttMtEZ6H3qJWfI7gIQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
 	$(document).ready(function () {
 
-		var quantitiy = 0;
+		var quantity = 0;
 		$('.quantity-right-plus').click(function (e) {
 
 			// Stop acting like a button
@@ -277,4 +296,52 @@
 		});
 
 	});
+</script>
+<script>
+	handleImport({
+		form: '#formProduct',
+		formInput: '.form-control',
+		formMessage: '.form-message',
+		rules: [
+			handleImport.isFocus('#quantity', 'Vui lòng nhập số lượng sản phẩm'),
+			handleImport.isChange('.form-select', 'Vui lòng chọn trường này'),
+			handleImport.isQuantity('#quantity', 'Số lượng phải thuộc khoảng 1 - 20'),
+		],
+		isSuccess: function (data, form) {
+			const dataProduct = {}
+			const newData = {}
+			$('#formProduct').serializeArray().forEach(function (value) {
+				if (value.name == 'size' || value.name == 'flavor')
+					dataProduct[value.name] = value.value
+				else 
+					newData[value.name] = parseFloat(value.value)
+			})
+			
+			const defaultProduct = @Html.Raw(Json.Serialize(product))
+			
+			defaultProduct.psfs.$values.forEach(function(value, index) {
+				if (value.size_id == dataProduct.size && value.flavor == dataProduct.flavor_id)  {
+					newData.product_size_flavor_id = value.id
+					newData.price = value.price
+				}
+			})
+
+			newData.total = parseFloat(newData.price) * parseInt(newData.quantity)
+			console.log(newData, dataProduct)
+
+			axios.post(window.location.origin + "/cart/create", newData)
+				.then(response => response.data)
+				.then(data => {
+					console.log(data)
+					window.location.href = window.location.origin + data.next_page
+				})
+				.catch(err => {
+					let errMessage = err.response.data.message;
+					let nextPage = err.response.data.next_page;
+					if (!errMessage && !nextPage) return;
+					const isConfirm = confirm(errMessage)
+					if (isConfirm) window.location.href = window.location.origin + nextPage
+				})
+		}
+	})
 </script>
