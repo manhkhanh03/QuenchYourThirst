@@ -1,0 +1,98 @@
+﻿@using QuenchYourThirst.Areas.Admin.Models;
+@* @model IList<AdminUser>; *@
+
+    <script>
+        console.log(@Html.Raw(Json.Serialize(Model)))
+    </script>
+<style>
+    tbody td img {
+        width: 74px;
+        height: 68px;
+        border-radius: 6px;
+    }
+</style>
+<div class="card">
+    <h5 class="card-header">Danh sách người dùng</h5>
+    <div class="table-responsive text-nowrap">
+        <table class="table">
+            <thead>
+                <tr class="text-nowrap">
+                    <th>#</th>
+                    <th>Tên người dùng</th>
+                    <th>Vai trò</th>
+                    <th>Email</th>
+                    <th>Vị trí</th>
+                    <th>Số điện thoại</th>
+                    <th>Link ảnh</th>
+                    <th>Ngày tạo</th>
+                    <th>Chức năng</th>
+                </tr>
+            </thead>
+            <tbody id="tbody">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <th scope="row">@item.id</th>
+                        <td>@item.login_name</td>
+                        <td>@item.role</td>
+                        <td>@item.email</td>
+                        <td>@item.address</td>
+                        <td>@item.phone</td>
+                        <td>
+                            <img style="width:44px; height:44px;" src="@(string.IsNullOrEmpty(item.img_user) ? "https://th.bing.com/th/id/OIP.S2W19xappbvIzlxm-QP8WQAAAA?rs=1&pid=ImgDetMain" : item.img_user)" alt="Avatar" class="rounded-circle">
+                        </td>
+                        <td>@(Convert.ToDateTime(item.created_at).ToString("dd/MM/yyyy H:mm:ss"))</td>
+                        <td>
+                            <a asp-area="admin" asp-controller="user" asp-action="edit" asp-route-id="@item.id" class="btn btn-primary" title="Sửa tài khoản người dùng"><i class='bx bxs-edit-alt'></i></a>
+                            <a asp-area="admin" asp-controller="user" asp-action="delete" asp-route-id="@item.id" class="btn btn-danger" title="Xoá tài khoản người dùng"><i class="fa-solid fa-trash-can"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<!--/ Responsive Table -->
+<script>
+    function actionSearchView(options, inputValue, typeSearch) {
+        function html() {
+            return `
+                <tr>
+                    <th scope="row">${options.id}</th>
+                    <td>${options.login_name}</td>
+                    <td>${options.role}</td>
+                    <td>${options.email}</td>
+                    <td>${options.address}</td>
+                    <td>${options.phone}</td>
+                    <td>
+                        <img style="width:44px; height:44px;" src="${!options.img_user ? 'https://th.bing.com/th/id/OIP.S2W19xappbvIzlxm-QP8WQAAAA?rs=1&pid=ImgDetMain' : options.img_user}" alt="Avatar" class="rounded-circle">
+                    </td>
+                    <td>${ moment(options.created_at).format('DD/MM/YYYY H:mm:ss') }</td>
+                    <td>
+                        <a href="/admin/user/edit/${options.id}" class="btn btn-primary" title="Sửa tài khoản người dùng"><i class='bx bxs-edit-alt'></i></a>
+                        <a href="/admin/user/delete/${options.id}" class="btn btn-danger" title="Xoá tài khoản người dùng"><i class="fa-solid fa-trash-can"></i></a>
+                    </td>
+                </tr>
+            `
+        }
+        function isTypeSearch(typeSearch) {
+             switch(parseInt(typeSearch)) {
+                case 1: 
+                    return (options.login_name).toLowerCase().includes(inputValue)
+                case 2: 
+                    return parseInt(options.id) === parseInt(inputValue)
+                case 3: 
+                    return (options.email).toLowerCase().includes(inputValue) 
+                case 4:
+                    return (options.phone).includes(inputValue)
+             }
+        }
+        return isTypeSearch(typeSearch) ? html() : ""
+    }
+
+    search({
+        parent: '#navbar-collapse',
+        input: 'input',
+        selector: '.form-select',
+    })
+</script>

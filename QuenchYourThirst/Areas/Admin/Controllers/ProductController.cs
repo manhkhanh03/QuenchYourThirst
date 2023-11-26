@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Newtonsoft.Json.Linq;
 using QuenchYourThirst.Models;
 using QuenchYourThirst.Utilities;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace QuenchYourThirst.Areas.Admin.Controllers
 {
@@ -13,18 +15,56 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
         private readonly DataContext _context;
         public ProductController(DataContext context) { _context = context; }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
 			if (!Functions.isAdmin()) return RedirectToAction("index", "home", new { area = "" });
-            var products = (from p in _context.Products
+            var products = await (from p in _context.Products
                             join i in _context.ProductImages on p.id equals i.product_id
                             select new
                             {
                                 products = p,
-                                images = i
-                            });
+                                images = i,
+                                psfs = _context.ProductSizeFlavors.Where(psf => psf.product_id == p.id).OrderBy(psf => psf.price).ToList(),
+                                flavor = _context.Flavors.Where(f => f.id == _context.ProductSizeFlavors.Where(psf => p.id == psf.product_id).Select(psf => psf.flavor_id).FirstOrDefault()).FirstOrDefault(),
+                                sizes = _context.Sizes.Where(s => _context.ProductSizeFlavors.Where(psf => p.id == psf.product_id).OrderBy(psf => psf.size_id).Select(psf => psf.size_id).Contains(s.id)).ToList(),
+                                bought = _context.Carts.Where(c => _context.ProductSizeFlavors.Where(psf => p.id == psf.product_id).Select(psf => psf.id).Contains(c.product_size_flavor_id)).Count(),
+                            }).ToListAsync();
             ViewData["actionName"] = "index";
             ViewData["controllerName"] = "product";
+
+            var dropdown = new List<SelectListItem> {
+                new SelectListItem()
+                {
+                    Text = "Tên sản phẩm",
+                    Value = "1",
+                },new SelectListItem()
+                {
+                    Text = "Trạng thái",
+                    Value = "2",
+                },new SelectListItem()
+                {
+                    Text = "Tồn kho",
+                    Value = "3",
+                },new SelectListItem()
+                {
+                    Text = "Giá",
+                    Value = "4",
+                },new SelectListItem()
+                {
+                    Text = "Loại sản phẩm",
+                    Value = "5",
+                },new SelectListItem()
+                {
+                    Text = "Kích thước",
+                    Value = "6",
+                },
+            };
+
+            ViewBag.SearchView = new
+            {
+                form = "#tbody",
+                dropdown = dropdown,
+            };
             return View(products);
         }
 
@@ -194,9 +234,8 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
             return View(product);
         }
 
-        [HttpPut]
+        [HttpPost]
         public IActionResult Edit([FromBody] Product product) {
-
             if (ModelState.IsValid)
             {
                 _context.Products.Update(product);

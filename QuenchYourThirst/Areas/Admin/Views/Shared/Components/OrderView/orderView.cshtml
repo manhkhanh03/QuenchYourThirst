@@ -1,0 +1,326 @@
+﻿<script>
+    console.log(@Html.Raw(Json.Serialize(Model)));
+</script>
+<style>
+    .bg-label-error {
+        background-color: #fcd7d7 !important;
+        color: #ec0303 !important;
+    }
+</style>
+<div class="card">
+    <h5 class="card-header">Đơn hàng</h5>
+    <div class="table-responsive text-nowrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Sản phẩm</th>
+                    <th>Khách hàng</th>
+                    <th style="width: 300px;">Hương vị</th>
+                    <th>Số lượng</th>
+                    <th>Trạng thái</th>
+                    <th>Thời gian đặt</th>
+                    <th>Chức năng</th>
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0" id="tbody">
+
+                @{
+                    int index = 1;
+                }
+                @foreach (var item in Model)
+                {
+                    string _class = "";
+                    int _status = 0;
+
+                    switch (Convert.ToInt32(item.status.id))
+                    {
+                        case 1:
+                            _status = 1;
+                            _class = "bg-label-primary";
+                            break;
+                        case 2:
+                            _status = 2;
+                            _class = "bg-label-success";
+                            break;
+                        case 3:
+                            _status = 3;
+                            _class = "bg-label-success";
+                            break;
+                        case 4:
+                            _status = 4;
+                            _class = "bg-label-warning";
+                            break;
+                        case 5:
+                            _status = 5;
+                            _class = "bg-label-error";
+                            break;
+                        case 6:
+                            _status = 6;
+                            _class = "bg-label-info";
+                            break;
+                    }
+                    <tr>
+                        <td>@item.o.id</td>
+                        <td>
+                            <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
+                                @foreach (var product in item.products)
+                                {
+                                    <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" class="avatar avatar-xs pull-up" title="" data-bs-original-title="@product.product.name">
+                                        <img src="@product.image" alt="Avatar" class="rounded-circle">
+                                    </li>
+                                }
+                            </ul>
+                        </td>
+                        <td>@item.customer.login_name</td>
+                        <td>
+                            <ul style="display: block !important" class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
+                                @foreach (var product in item.products)
+                                {
+                                    <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" class="avatar avatar-xs pull-up" style="margin-left: 0;" title="" data-bs-original-title="@product.product.name">
+                                        <p>
+                                            @product.flavor
+                                        </p>
+                                    </li>
+                                }
+                            </ul>
+                        </td>
+                        <td>
+                            <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
+                                @foreach (var product in item.products)
+                                {
+                                    <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" class="avatar avatar-xs pull-up" title="" data-bs-original-title="@product.product.name">
+                                        <span style="border: 1px solid #697a8d; border-radius: 50%; width: 100%; height: 100%; display: block; text-align: center; background-color: #fff;">
+                                            @product.quantity
+                                        </span>
+                                    </li>
+                                }
+                            </ul>
+                        </td>
+                        <td><span class="badge @_class me-1">@item.status.name</span></td>
+                        <td>@(Convert.ToDateTime(item.o.created_at).ToString("dd/MM/yyyy H:mm:ss"))</td>
+                        <td>
+                            <div class="dropdown">
+                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <form method="post" id="formStatusOrder" asp-action="edit">
+                                        <input type="hidden" name="id" value="@item.o.id">
+                                        <input type="hidden" name="status_order_id" value="1">
+                                        @switch (_status)
+                                        {
+                                            case 1:
+                                                <button type="submit" class="dropdown-item" data="2" onclick="changeStatusOrder(this)" style="border: none; background: transparent;">
+                                                    <i class="bx bx-trash me-1"></i> Giao hàng
+                                                </button>
+                                                <button type="submit" class="dropdown-item" data="5" onclick="changeStatusOrder(this)" style="border: none; background: transparent;">
+                                                    <i class="bx bx-trash me-1"></i> Huỷ đơn hàng
+                                                </button>
+                                                break;
+                                            case 2:
+                                                <button type="submit" class="dropdown-item" data="3" onclick="changeStatusOrder(this)" style="border: none; background: transparent;">
+                                                    <i class="bx bx-trash me-1"></i> Giao hàng thành công
+                                                </button>
+                                                break;
+                                            case 4:
+                                                <button type="submit" class="dropdown-item" data="5" onclick="changeStatusOrder(this)" style="border: none; background: transparent;">
+                                                    <i class="bx bx-trash me-1"></i> Huỷ đơn hàng
+                                                </button>
+                                                <button type="submit" class="dropdown-item" data="6" onclick="changeStatusOrder(this)" style="border: none; background: transparent;">
+                                                    <i class="bx bx-trash me-1"></i> Bỏ yêu cầu huỷ đơn hàng
+                                                </button>
+                                                break;
+                                            case 6:
+                                                <button type="submit" class="dropdown-item" data="1" onclick="changeStatusOrder(this)" style="border: none; background: transparent;">
+                                                    <i class="bx bx-edit-alt me-1"></i> Xác nhận đơn hàng
+                                                </button>
+                                                <button type="submit" class="dropdown-item" data="5" onclick="changeStatusOrder(this)" style="border: none; background: transparent;">
+                                                    <i class="bx bx-trash me-1"></i> Huỷ đơn hàng
+                                                </button>
+                                                break;
+                                            default:
+                                                <p class="dropdown-item">Không có chức năng cho trạng thái này!</p>
+                                                break;
+                                        }
+
+                                    </form>
+
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                <script>
+                    function changeStatusOrder(thisElement) {
+                        const form = thisElement.parentNode
+                        form.onsubmit = function (e) {
+                            e.preventDefault()
+                            console.log(thisElement.textContent)
+                            const isConfirm = confirm("Bạn có chắc thực hiện hành động này chứ!")
+                            if (isConfirm) {
+                                const inputStatus = e.target.querySelector('input[name=status_order_id]')
+                                inputStatus.value = thisElement.getAttribute('data')
+                                form.submit()
+                            }
+                        }
+                    }
+                </script>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    function actionSearchView(options, inputValue, typeSearch) {
+        function returnHtmlCase(_status) {
+            switch (_status) {
+                case 1:
+                    return `
+                                <button type="submit" class="dropdown-item" data="2" onclick="changeStatusOrder(this)" style="border: none; background: transparent;">
+                                    <i class="bx bx-trash me-1"></i> Giao hàng
+                                </button>
+                                <button type="submit" class="dropdown-item" data="5" onclick="changeStatusOrder(this)" style="border: none; background: transparent;">
+                                    <i class="bx bx-trash me-1"></i> Huỷ đơn hàng
+                                </button>
+                            `
+                case 2:
+                    return `
+                                <button type="submit" class="dropdown-item" data="3" onclick="changeStatusOrder(this)" style="border: none; background: transparent;">
+                                    <i class="bx bx-trash me-1"></i> Giao hàng thành công
+                                </button>
+                            `
+                case 4:
+                    return `
+                                <button type="submit" class="dropdown-item" data="5" onclick="changeStatusOrder(this)" style="border: none; background: transparent;">
+                                    <i class="bx bx-trash me-1"></i> Huỷ đơn hàng
+                                </button>
+                                <button type="submit" class="dropdown-item" data="6" onclick="changeStatusOrder(this)" style="border: none; background: transparent;">
+                                    <i class="bx bx-trash me-1"></i> Bỏ yêu cầu huỷ đơn hàng
+                                </button>
+                            `
+                case 6:
+                    return `<button type="submit" class="dropdown-item" data="1" onclick="changeStatusOrder(this)" style="border: none; background: transparent;">
+                                <i class="bx bx-edit-alt me-1"></i> Xác nhận đơn hàng
+                            </button>
+                            <button type="submit" class="dropdown-item" data="5" onclick="changeStatusOrder(this)" style="border: none; background: transparent;">
+                                <i class="bx bx-trash me-1"></i> Huỷ đơn hàng
+                            </button>
+                            `
+                default:
+                    return `
+                            <p class="dropdown-item">Không có chức năng cho trạng thái này!</p>`
+            }
+        }
+        function html() {
+            let _class = "";
+            let _status = 0;
+
+            switch (parseInt(options.status.id)) {
+                case 1:
+                    _status = 1;
+                    _class = "bg-label-primary";
+                    break;
+                case 2:
+                    _status = 2;
+                    _class = "bg-label-success";
+                    break;
+                case 3:
+                    _status = 3;
+                    _class = "bg-label-success";
+                    break;
+                case 4:
+                    _status = 4;
+                    _class = "bg-label-warning";
+                    break;
+                case 5:
+                    _status = 5;
+                    _class = "bg-label-error";
+                    break;
+                case 6:
+                    _status = 6;
+                    _class = "bg-label-info";
+                    break;
+            }
+            let productName = ''
+            const products = (options.products).map(value => {
+                productName = value.product.name
+                return `
+                            <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" class="avatar avatar-xs pull-up" title="" data-bs-original-title="${value.product.name}">
+                                <img src="${value.image}" alt="Avatar" class="rounded-circle">
+                            </li>
+                        `
+            }).join('')
+
+            const flavor = (options.products).map(value => `
+                        <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" class="avatar avatar-xs pull-up" style="margin-left: 0;" title="" data-bs-original-title="${value.product.name}">
+                            <p >${value.flavor}</p>
+                        </li>
+                    `).join('')
+
+            const quantity = (options.products).map(value => `
+                        <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" class="avatar avatar-xs pull-up" title="" data-bs-original-title="${value.product.name}">
+                            <span style="border: 1px solid #697a8d; border-radius: 50%; width: 100%; height: 100%; display: block; text-align: center; background-color: #fff;">
+                                ${value.quantity}</span>
+                        </li>
+                    `).join('')
+
+            return `
+                        <tr>
+                            <td>${options.o.id}</td>
+                            <td>
+                                <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">${products}</ul>
+                            </td>
+                            <td>${options.customer.login_name}</td>
+                            <td>
+                                <ul style="display: block !important" class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
+                                   ${flavor}
+                                </ul>
+                            </td>
+                            <td>
+                                <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
+                                    ${quantity}
+                                </ul>
+                            </td>
+                            <td><span class="badge ${_class} me-1">${options.status.name}</span></td>
+                            <td>${moment(options.o.created_at).format("DD/MM/YYYY H:mm:ss")}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <form method="post" id="formStatusOrder" asp-action="edit">
+                                            <input type="hidden" name="id" value="${options.o.id}">
+                                            <input type="hidden" name="status_order_id" value="1">
+                                            ${returnHtmlCase(_status)}
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    `
+        }
+        function isTypeSearch(typeSearch) {
+            switch (parseInt(typeSearch)) {
+                case 2:
+                    return parseInt(options.customer.id) === parseInt(inputValue) || (options.customer.login_name).toLowerCase().trim().includes(String(inputValue).toLowerCase().trim())
+                case 3:
+                    const isFlavor = Array.from(options.products).some(value => (value.flavor).toLowerCase().trim().includes((inputValue).toLowerCase().trim()))
+                    return isFlavor;
+                case 4:
+                    const isQuantity = Array.from(options.products).some(value => parseInt(inputValue) === parseInt(value.quantity))
+                    return isQuantity
+                case 5:
+                    return parseInt(options.status.id) === parseInt(inputValue) || (options.status.name).toLowerCase().includes((inputValue).toLowerCase().trim())
+            }
+        }
+        return isTypeSearch(typeSearch) ? html() : ""
+    }
+
+    search({
+        parent: '#navbar-collapse',
+        input: 'input',
+        selector: '.form-select',
+    })
+</script>

@@ -1,5 +1,4 @@
 ﻿<!-- Responsive Table -->
-
 <style>
     tbody td img {
         width: 74px;
@@ -26,14 +25,11 @@
                     <th>Chức năng</th>
                 </tr>
             </thead>
-            <tbody>
-                @{
-                int index = 1;
-                }
+            <tbody id="tbody">
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <th scope="row">@(index++)</th>
+                        <th scope="row">@item.products.id</th>
                         <td>
                             <img src="@item.images.url" alt="@item.images.url">
                         </td>
@@ -41,10 +37,17 @@
                         <td>@item.products.status_product_id</td>
                         <td>@item.products.product_category_id</td>
                         <td>@item.products.quantity</td>
-                        <td>@item.products.quantity</td>
-                        <td>@item.products.quantity</td>
-                        <td>@item.products.quantity</td>
-                        <td>@item.products.quantity</td>
+                        <td>@item.bought</td>
+                        <td>@((item.psfs).Count == 1 ? item.psfs[0].price : item.psfs[0].price + " - " + item.psfs[(item.psfs).Count - 1].price)</td>
+                        <td>@item.flavor.name</td>
+                        <td>@for(int i = 0; i < (item.sizes).Count; i++)
+                            {
+                                <span>@((item.sizes[i].size).Trim())</span>
+
+                                @if ((item.sizes).Count - 1 == i) break;
+                                <span> - </span>
+                            }
+                        </td>
                         <td>
                             <a asp-area="admin" asp-controller="product" asp-action="edit" asp-route-id="@item.products.id" class="btn btn-primary" title="Sửa sản phẩm"><i class='bx bxs-edit-alt'></i></a>
                             <a asp-area="admin" asp-controller="product" asp-action="delete" asp-route-id="@item.products.id" class="btn btn-danger" title="Xoá sản phẩm"><i class="fa-solid fa-trash-can"></i></a>
@@ -56,3 +59,61 @@
     </div>
 </div>
 <!--/ Responsive Table -->
+
+<script>
+    console.log(@Html.Raw(Json.Serialize(Model)))
+    function actionSearchView(options, inputValue, typeSearch) {
+        function html() {
+            let str = "";
+            for (let key = 0; key < (options.sizes).length; key++) {
+                str +=  `<span>${(options.sizes[key].size).trim()}</span>`
+                if ((options.sizes).length - 1 == key) break;
+                str += "<span> - </span>"
+            }
+            return `
+                <tr>
+                    <th scope="row">${options.products.id}</th>
+                    <td>
+                        <img src="${options.images.url}" alt="${options.images.url}">    
+                    </td>
+                    <td>${options.products.name}</td>
+                    <td>${options.products.status_product_id}</td>
+                    <td>${options.products.product_category_id}</td>
+                    <td>${options.products.quantity}</td>
+                    <td>${options.bought}</td>
+                    <td>${(options.psfs).length == 1 ? (options.psfs[0].price).toFixed(3) : (options.psfs[0].price).toFixed(3) + " - " + (options.psfs[(options.psfs).length - 1].price).toFixed(3) }</td>
+                    <td>${options.flavor.name}</td>
+                    <td>${str}</td>
+                    <td>
+                        <a  href="/admin/product/edit/${options.products.id}"  class="btn btn-primary" title="Sửa sản phẩm"><i class='bx bxs-edit-alt'></i></a>
+                        <a  href="/admin/product/delete/${options.products.id}" class="btn btn-danger" title="Xoá sản phẩm"><i class="fa-solid fa-trash-can"></i></a>
+                    </td>
+                </tr>
+            `
+        }
+        function isTypeSearch(typeSearch) {
+            switch (parseInt(typeSearch)) {
+                case 1:
+                    return (options.products.name).toLowerCase().includes(inputValue)
+                case 2:
+                    return parseInt(options.products.status_product_id) === parseInt(inputValue) || parseInt(inputValue) == null
+                case 3:
+                    return parseInt(options.products.quantity) >= parseInt(inputValue)
+                case 4:
+                    return parseFloat(options.psfs[0].price) <= parseFloat(inputValue) && parseFloat(options.psfs[(options.psfs).length - 1].price) >= parseFloat(inputValue)
+                case 5: 
+                    return parseInt(options.products.product_category_id) === parseInt(inputValue)
+                case 6: 
+                    const isSize = Array.from(options.sizes).some(value => String(inputValue).toLowerCase().trim() == String(value.size).toLowerCase().trim() || String(inputValue).toLowerCase().trim() == String(value.name).toLowerCase().trim() )
+                    return isSize;
+            }
+        }
+        return isTypeSearch(typeSearch) ? html() : ""
+    }
+
+    search({
+        parent: '#navbar-collapse',
+        input: 'input',
+        selector: '.form-select',
+    })
+</script>

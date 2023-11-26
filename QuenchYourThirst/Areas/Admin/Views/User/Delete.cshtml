@@ -1,0 +1,104 @@
+﻿@model QuenchYourThirst.Areas.Admin.Models.AdminUser;
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_layout.cshtml";
+    var roles = ViewBag.Roles;
+}
+
+<!-- / Navbar -->
+<!-- Content wrapper -->
+<div class="content-wrapper">
+    <!-- Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <h3 class="card-header"></h3>
+                    <div class="card-body">
+                        <div class="d-flex align-items-start align-items-sm-center gap-4">
+                            <img src="@(string.IsNullOrEmpty(Model.img_user) ? "https://th.bing.com/th/id/OIP.S2W19xappbvIzlxm-QP8WQAAAA?rs=1&pid=ImgDetMain" : Model.img_user)"
+                                 alt="user-avatar" class="d-block rounded" height="100" width="100" id="uploadedAvatar" />
+                        </div>
+                    </div>
+                    <hr class="my-0" />
+                    <div class="card-body">
+                        <form id="formAccountSettings" method="POST" asp-action="delete">
+                            <div class="row">
+                                <h5>Thông tin người dùng</h5>
+                                <input type="hidden" asp-for="id" disabled />
+                                <div class="mb-3 col-md-6">
+                                    <label for="login_name" class="form-label">Tên người dùng</label>
+                                    <input class="form-control" type="text" id="login_name" name="login_name" asp-for="login_name" disabled />
+                                    <p class="form-message"></p>
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input class="form-control" type="text" id="email" name="email" asp-for="email" placeholder="example: 1000" disabled />
+                                    <p class="form-message"></p>
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label" for="role_id">Vai trò</label>
+                                    <select id="role_id" name="role_id" class="select2 form-select" asp-for="role_id" asp-items="@(new SelectList(roles, "id", "name"))" disabled></select>
+                                    <p class="form-message"></p>
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label for="address" class="form-label">Địa chỉ</label>
+                                    <input class="form-control" type="text" id="address" name="address" asp-for="address" placeholder="example: Vinh, Nghệ An" disabled />
+                                    <p class="form-message"></p>
+                                </div><div class="mb-3 col-md-6">
+                                    <label for="phone" class="form-label">Số điện thoại</label>
+                                    <input class="form-control" type="text" id="phone" name="phone" asp-for="phone" placeholder="example: 123 4567 890" disabled />
+                                    <p class="form-message"></p>
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <button type="submit" class="btn btn-primary me-2">Save changes</button>
+                                <a href="javascript:history.back()" class="btn btn-outline-secondary">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /Account -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- / Content -->
+    <!-- Footer -->
+    <footer class="content-footer footer bg-footer-theme">
+        <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+            <div class="mb-2 mb-md-0">
+                ©
+                <script>
+                    document.write(new Date().getFullYear());
+                </script>
+                , made with ❤️ by
+                <a href="https://themeselection.com" target="_blank" class="footer-link fw-bolder">ManhKhanh DT</a>
+            </div>
+        </div>
+    </footer>
+    <!-- / Footer -->
+
+    <div class="content-backdrop fade"></div>
+</div>
+<!-- Content wrapper -->
+<script src="~/admin/assets/js/pages-account-settings-account.js"></script>
+<script src="~/admin/assets/vendor/libs/jquery/jquery.js"></script>
+<script src="~/admin/assets/vendor/libs/popper/popper.js"></script>
+<script src="~/admin/assets/vendor/js/bootstrap.js"></script>
+<script src="~/admin/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+
+<script src="~/admin/assets/vendor/js/menu.js"></script>
+<!-- endbuild -->
+<!-- Vendors JS -->
+<!-- Main JS -->
+<script src="~/admin/assets/js/main.js"></script>
+
+<!-- Page JS -->
+<script src="~/admin/assets/js/pages-account-settings-account.js"></script>
+
+<!-- Place this tag in your head or just before your close body tag. -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropbox.js/10.11.0/Dropbox-sdk.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js" integrity="sha512-WrdC3CE9vf1nBf58JHepuWT4x24uTacky9fuzw2g/3L9JkihgwZ6Cfv+JGTtNyosOhEmttMtEZ6H3qJWfI7gIQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

@@ -68,6 +68,7 @@ namespace QuenchYourThirst.Controllers
             cart.status_cart_id = 3;
             _context.Carts.Update(cart);
             _context.SaveChanges();
+            Functions._Message = "Xoá sản phẩm khỏi giỏ hàng thành công!";
             return Ok(new
             {
                 message = "Xoá sản phẩm khỏi giỏ hàng thành công!",

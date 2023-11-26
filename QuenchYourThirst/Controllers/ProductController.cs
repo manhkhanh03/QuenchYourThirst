@@ -28,9 +28,9 @@ namespace QuenchYourThirst.Controllers
 							   imgs = _context.ProductImages.Where(img => img.product_id == p.id).ToList(),
 							   sizes = _context.ProductSizeFlavors.Where(psf => psf.product_id == p.id)
 													   .Select(psf => _context.Sizes.FirstOrDefault(s => s.id == psf.size_id)).ToList(),
-							   flavors = _context.ProductSizeFlavors.Where(psf => psf.product_id == p.id)
-													   .Select(psf => _context.Flavors.FirstOrDefault(f => f.id == psf.flavor_id)).ToList(),
-						   }).First();
+							   flavor = _context.ProductSizeFlavors.Where(psf => psf.product_id == p.id)
+													   .Select(psf => _context.Flavors.FirstOrDefault(f => f.id == psf.flavor_id)).FirstOrDefault(),
+						   }).FirstOrDefault();
 
 			if (product == null) return Redirect("/not-found");
 			var selectSize = new Size
@@ -38,13 +38,7 @@ namespace QuenchYourThirst.Controllers
 				id = 0,
 				name = "Chọn size:"
 			};
-			var selectFlavor = new Flavor
-			{
-				id = 0,
-				name = "Chọn hương vị:"
-			};
 			product.sizes.Insert(0, selectSize);
-			product.flavors.Insert(0, selectFlavor);
 
 			ViewBag.Product = product;
 			return View();

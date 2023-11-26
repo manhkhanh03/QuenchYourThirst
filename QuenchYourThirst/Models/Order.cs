@@ -10,7 +10,9 @@ namespace QuenchYourThirst.Models
     {
         public Order() { 
             created_at = DateTime.ParseExact(Functions.getCurrentDate(), "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
-        }
+            status_order_id = 6;
+
+		}
         [Key]
         public long id { get; set; }
         public long customer_id { get; set; }

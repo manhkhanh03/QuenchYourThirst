@@ -23,8 +23,6 @@ namespace QuenchYourThirst.Models
 		public DbSet<AdminMenu> AdminMenus { get; set; }
 		public DbSet<Role> Roles { get; set; }
 		public DbSet<AdminUser> AdminUsers { get; set; }
-		public DbSet<Category> Categorys { get; set; }
-        public DbSet<Category1> Category1 { get; set; }
 		public DbSet<Deal_of_the_day> Deal_of_the_days { get; set; }
 		public DbSet<Poster> Posters { get; set; }
 		public DbSet<Services> Services { get; set; }

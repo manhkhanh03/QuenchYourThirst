@@ -18,6 +18,31 @@ namespace QuenchYourThirst.Areas.Admin.Controllers
 			var menus = _context.Menus.OrderBy(m => m.id).ToList();
             ViewData["actionName"] = "";
             ViewData["controllerName"] = "menu";
+            var dropdown = new List<SelectListItem> {
+                new SelectListItem()
+                {
+                    Text = "Tiêu đề",
+                    Value = "1",
+                },new SelectListItem()
+                {
+                    Text = "Id menu",
+                    Value = "2",
+                },new SelectListItem()
+                {
+                    Text = "Vị trí",
+                    Value = "3",
+                },new SelectListItem()
+                {
+                    Text = "Đường dẫn",
+                    Value = "4",
+                },
+            };
+
+            ViewBag.SearchView = new
+            {
+                form = "#tbody",
+                dropdown = dropdown,
+            };
             return View(menus);
         }
 

@@ -11,7 +11,6 @@
             errorMessage = rules[i](ruleElement.value);
             if (errorMessage) break;
         }
-
         if (errorMessage) {
             formMessage.innerText = errorMessage;
         } else formMessage.innerText = '';
@@ -33,7 +32,6 @@
                 }
             });
         });
-
         if (isCheckInput) {
             const data = {};
             Array.from(inputElement).forEach((ele) => {

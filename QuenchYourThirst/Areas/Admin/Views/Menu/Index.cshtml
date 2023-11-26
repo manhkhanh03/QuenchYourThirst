@@ -26,7 +26,7 @@
                     <th>Chức năng</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="tbody">
                 @foreach (var item in Model)
                 {
                     <tr>
@@ -49,3 +49,45 @@
     </div>
 </div>
 <!--/ Responsive Table -->
+
+<script>
+    function actionSearchView(options, inputValue, typeSearch) {
+        function html() {
+            return `
+                <tr>
+                    <th scope="row">${options.id}</th>
+                    <td>${options.menuName}</td>
+                    <td>${options.levels}</td>
+                    <td>${options.parentId}</td>
+                    <td>${options.menuOrder}</td>
+                    <td>${options.position}</td>
+                    <td>${options.link}</td>
+                    <td>${options.isActive}</td>
+                    <td>
+                        <a  href="/admin/menu/edit/${options.id}"  class="btn btn-primary" title="Sửa menu"><i class='bx bxs-edit-alt'></i></a>
+                        <a  href="/admin/menu/delete/${options.id}" class="btn btn-danger" title="Xoá menu"><i class="fa-solid fa-trash-can"></i></a>
+                    </td>
+                </tr>
+            `
+        }
+        function isTypeSearch(typeSearch) {
+            switch (parseInt(typeSearch)) {
+                case 1:
+                    return (options.menuName).toLowerCase().includes(inputValue) 
+                case 2:
+                    return parseInt(options.id) === parseInt(inputValue)
+                case 3:
+                    return parseInt(options.position) === parseInt(inputValue)
+                case 4:
+                    return String(options.link).toLowerCase().includes(inputValue)
+            }
+        }
+        return isTypeSearch(typeSearch) ? html() : ""
+    }
+
+    search({
+        parent: '#navbar-collapse',
+        input: 'input',
+        selector: '.form-select',
+    })
+</script>

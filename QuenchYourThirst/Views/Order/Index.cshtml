@@ -116,7 +116,21 @@
 
 										<td class="total">@(item.cart.total)đ</td>
 										<td>
-											<a asp-controller="order" asp-action="cancel" asp-route-id="@item.order.id" class="btn btn-danger" title="Huỷ đơn hàng"><i class="fa-solid fa-xmark"></i></a>
+											@switch(Convert.ToInt32(item.order.status_order_id))
+											{
+												case 1:
+												case 2:
+												case 6:
+													<a asp-controller="order" asp-action="cancel" asp-route-id="@item.order.id" class="btn btn-danger" title="Huỷ đơn hàng"><i class="fa-solid fa-xmark"></i></a>
+													break;
+												case 3:
+													<a asp-controller="order" asp-actionn="cancel" asp-route-idddd="@item.order.id" class="btn btn-outline-success" title="Mua lại"><i class='bx bxs-shopping-bag-alt'></i></a>
+													break;
+												case 4:
+													<a asp-controller="order" asp-action="reCancel" asp-route-id="@item.order.id" class="btn btn-danger" title="Huỷ yêu cầu huỷ đơn hàng"><i class="fa-solid fa-xmark"></i></a>
+													break;
+											}
+											
 										</td>
 									</tr>
 

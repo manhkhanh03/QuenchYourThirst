@@ -25,6 +25,10 @@ namespace QuenchYourThirst.Controllers
 			{
 				_context.AdminUsers.Update(user);
 				_context.SaveChanges();
+				Functions._Email = user.email;
+				Functions._Address = user.address;
+				Functions._Phone = user.phone;
+				Functions._Image = user.img_user;
 				Functions._Message = "Thay đổi thông tin liên hệ thành công!";
 				return RedirectToAction("index", "profile");
 			}

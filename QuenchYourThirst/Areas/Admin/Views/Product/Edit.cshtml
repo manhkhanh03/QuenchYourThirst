@@ -1,11 +1,11 @@
 ﻿@model QuenchYourThirst.Models.Product;
 
 @{
-Layout = "~/Areas/Admin/Views/Shared/_layout.cshtml";
-var flavors = ViewBag.Flavors;
-var sizes = ViewBag.Sizes;
-var img = ViewBag.Image;
-var psf = ViewBag.PSF;
+    Layout = "~/Areas/Admin/Views/Shared/_layout.cshtml";
+    var flavors = ViewBag.Flavors;
+    var sizes = ViewBag.Sizes;
+    var img = ViewBag.Image;
+    var psf = ViewBag.PSF;
 }
 <!-- / Navbar -->
 <!-- Content wrapper -->
@@ -18,7 +18,7 @@ var psf = ViewBag.PSF;
         <div class="row">
             <div class="col-md-12">
                 <div class="card mb-4">
-                    <h3 class="card-header">Thêm mới sản phẩm</h3>
+                    <h3 class="card-header">Chỉnh sửa sản phẩm</h3>
                     <div class="card-body">
                         <div class="d-flex align-items-start align-items-sm-center gap-4">
                             <img src="@img.url" alt="user-avatar" class="d-block rounded" height="100" width="100" id="uploadedAvatar" />
@@ -39,7 +39,7 @@ var psf = ViewBag.PSF;
                     </div>
                     <hr class="my-0" />
                     <div class="card-body">
-                        <form id="formAccountSettings" method="POST">
+                        <form id="formAccountSettings">
                             <div class="row">
                                 <h5>Thông tin cơ bản</h5>
                                 <input class="form-control" type="hidden" id="id" name="id" asp-for="id" />
@@ -73,7 +73,7 @@ var psf = ViewBag.PSF;
                                         {
                                         if (item.isActive)
                                         {
-                                        <option value="@item.id">@item.name</option>
+                                            <option value="@item.id">@item.name</option>
                                         }
                                         }
                                     </select>
@@ -111,7 +111,7 @@ var psf = ViewBag.PSF;
                             </div>
                             <div class="mt-2">
                                 <button type="submit" class="btn btn-primary me-2">Save changes</button>
-                                <button type="reset" class="btn btn-outline-secondary">Cancel</button>
+                                <a href="javascript:history.back()" class="btn btn-outline-secondary">Cancel</a>
                             </div>
                         </form>
                     </div>
@@ -156,7 +156,7 @@ var psf = ViewBag.PSF;
 
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-
+<script src="~/js/validate.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropbox.js/10.11.0/Dropbox-sdk.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js" integrity="sha512-WrdC3CE9vf1nBf58JHepuWT4x24uTacky9fuzw2g/3L9JkihgwZ6Cfv+JGTtNyosOhEmttMtEZ6H3qJWfI7gIQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
@@ -207,7 +207,7 @@ var psf = ViewBag.PSF;
                     return img.url == listImg[key].src
                 })
                 if (isTrue.length != 0)
-                    continue;
+                    window.location.href = window.location.origin + '/product/' + options.name + '/' + options.data_id
             }
             var imageUrl = listImg[key].src;
             var fileName = imageUrl.split('/').pop() + '.jpg';
@@ -243,12 +243,12 @@ var psf = ViewBag.PSF;
     function handleUploadImgProduct(options) {
         return new Promise((resolve, reject) => {
             const data = {
-                id: @Html.Raw(Json.Serialize(img.id))
+                id: @Html.Raw(Json.Serialize(img.id)),
                 product_id: options.product_id,
                 url: options.url,
             }
 
-            axios.put(options.urlApi, data)
+            axios.post(options.urlApi, data)
                 .then(data => {
                     console.log("Success: ", data)
                     options.success()
@@ -260,8 +260,6 @@ var psf = ViewBag.PSF;
                 })
         })
     }
-</script>
-<script>
     window.onload = function () {
         var selectElement = document.getElementById('sizes');
         for (var i = 0; i < selectElement.options.length; i++) {
@@ -271,11 +269,10 @@ var psf = ViewBag.PSF;
             }
         }
     }
-</script>
-<script>
     // console.log(abc)
     function setOptionForSelect(id) {
         const elementFlavor = document.querySelector('#nameFlavor')
+        const fls = @Html.Raw(Json.Serialize(flavors["flavors"]));
         const htmls = fls.map(function (item, index) {
             if (item.type_flavor_id == id || item.type_flavor_id == 0) {
                 return `
@@ -327,7 +324,8 @@ var psf = ViewBag.PSF;
     handleSize({
         size: '#sizes'
     })
-
+</script>
+<script>
     handleImport({
         form: '#formAccountSettings',
         formInput: '.form-control',
@@ -340,7 +338,7 @@ var psf = ViewBag.PSF;
         ],
         isSuccess: function (data, form) {
             const dataProduct = {}
-            $('form').serializeArray().forEach(function (value) {
+            $('#formAccountSettings').serializeArray().forEach(function (value) {
                 dataProduct[value.name] = value.value
             })
             dataProduct.id = document.querySelector("#id").value;
@@ -351,6 +349,7 @@ var psf = ViewBag.PSF;
                 prices: [],
                 psfId: [],
             }
+            console.log(dataProduct)
             const sizes = form.querySelectorAll(".item-size")
             sizes.forEach(function (item) {
                 console.log(item.querySelector('input').value)
@@ -358,11 +357,12 @@ var psf = ViewBag.PSF;
                 dataPsf.prices.push(item.querySelector('input').value)
                 dataPsf.psfId.push(item.querySelector('select').getAttribute('data-psf'))
             })
-            console.log(dataPsf)
+            console.log(dataProduct)
 
-            axios.put(window.location.href, dataProduct)
+            axios.post(window.location.href, dataProduct)
                 .then(response => response.data)
                 .then(data => {
+                    console.log(data)
                     dataPsf.sizes.forEach(function (value, index) {
                         const dt = {
                             product_id: data.id,
@@ -370,9 +370,10 @@ var psf = ViewBag.PSF;
                             size_id: value,
                             price: dataPsf.prices[index]
                         }
-                        if(!dataPsf.psfId[index]) {
-                            data.id= dataPsf.psfId[index],
-                            axios.put(window.location.origin + '/admin/psf/edit', dt)
+                        if (dataPsf.psfId[index]) {
+                            dt.id = dataPsf.psfId[index];
+                            axios.post(window.location.origin + '/admin/psf/edit', dt)
+
                         }
                         else axios.post(window.location.origin + '/admin/psf/create', dt)
                     })
@@ -381,8 +382,10 @@ var psf = ViewBag.PSF;
                         listImg: '#uploadedAvatar',
                         product_id: data.id,
                         currentUrl: @Html.Raw(Json.Serialize(img.url)),
+                        name: data.name,
+                        data_id: data.id,
                         success: function () {
-                            window.location.href = window.location.origin + '/' + data.name + '/' + data.id
+                            window.location.href = window.location.origin + '/product/' + data.name + '/' + data.id
                         }
                     })
                 })
