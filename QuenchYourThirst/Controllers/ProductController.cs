@@ -40,6 +40,8 @@ namespace QuenchYourThirst.Controllers
 			};
 			product.sizes.Insert(0, selectSize);
 
+			ViewData["category"] = product.product.product_category_id;
+			ViewData["next"] = product.product.id;
 			ViewBag.Product = product;
 			return View();
 		}

@@ -1,0 +1,43 @@
+﻿<script>
+	console.log(@Html.Raw(Json.Serialize(Model)))
+</script>
+
+<div class="mt-4">
+	<h3>Bình luận trước đó</h3>
+	<ul class="list-group" id="list-group">
+		<!-- User Comment -->
+		@foreach(var cm in Model)
+		{
+			<li class="list-group-item">
+				<div class="d-flex justify-content-between">
+					<strong>@cm.user.login_name:</strong>
+					<div>
+						<button type="button" class="btn btn-outline-secondary btn-sm me-2">
+							<i class="fas fa-thumbs-up"></i> Like
+						</button>
+						<button type="button" class="btn btn-outline-secondary btn-sm">
+							<i class="fas fa-comment"></i> Phản hồi
+						</button>
+					</div>
+				</div>
+				<p>@(cm.comment.content).</p>
+				<!-- Author/Seller Reply -->
+				@if (cm.feedback != null) {
+					<ul class="list-group mt-2">
+						<li class="list-group-item list-group-item-secondary">
+							<div class="d-flex justify-content-between">
+								<strong>QuenchYourThirst:</strong>
+								<div>
+									<button type="button" class="btn btn-outline-secondary btn-sm me-2">
+										<i class="fas fa-thumbs-up"></i> Like
+									</button>
+								</div>
+							</div>
+							<p>@(cm.feedback.content).</p>
+						</li>
+					</ul>
+				}
+			</li>
+		}
+	</ul>
+</div>

@@ -31,6 +31,7 @@ namespace QuenchYourThirst.Models
 		public DbSet<PaymentMethod> PaymentMethods { get; set; }
 		public DbSet<OrderCart> OrderCarts { get; set; }
 		public DbSet<StatusOrder> StatusOrders { get; set; }
+		public DbSet<Comment> Comments { get; set; }
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>(entity =>
